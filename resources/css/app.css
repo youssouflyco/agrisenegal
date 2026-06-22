@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+@theme {
+    --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+    --color-agri-primary: #2e7d32;
+    --color-agri-light: #66bb6a;
+    --color-harvest: #f9a825;
+    --color-earth: #ef6c00;
+    --color-off-white: #fafafa;
+    --color-soft-gray: #eceff1;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans text-gray-800 antialiased;
+    }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-white/15 backdrop-blur-xl border border-white/25 shadow-2xl;
+    }
+
+    .glass-card {
+        @apply bg-white/80 backdrop-blur-md border border-white/60 shadow-lg;
+    }
+
+    .kpi-card {
+        @apply rounded-2xl bg-white p-6 shadow-md border border-soft-gray/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-agri-primary px-6 py-3 font-semibold text-white transition hover:bg-agri-primary/90 focus:ring-4 focus:ring-agri-light/40;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-agri-primary px-6 py-3 font-semibold text-agri-primary transition hover:bg-agri-primary hover:text-white;
+    }
+
+    .section-title {
+        @apply text-3xl font-bold text-agri-primary md:text-4xl;
+    }
+
+    .agri-map {
+        @apply min-h-[70vh] rounded-2xl;
+    }
+
+    .agri-marker {
+        background: transparent;
+        border: 0;
+    }
+
+    .agri-marker__dot {
+        @apply block h-4 w-4 rounded-full border-2 border-white shadow-lg;
+    }
+
+    .agri-marker__dot--producer {
+        background: #2e7d32;
+    }
+
+    .agri-marker__dot--distributor {
+        background: #ef6c00;
+    }
+}
