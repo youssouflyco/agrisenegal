@@ -16,11 +16,13 @@
 
             @include('partials.flash')
 
-            <form method="POST" action="{{ route('two-factor.verify') }}" class="mt-8 space-y-5">
+            <form method="POST" action="{{ route('two-factor.verify') }}" class="mt-8 space-y-5" data-auth-form>
                 @csrf
-                <input type="text" name="code" maxlength="6" pattern="[0-9]{6}" required autofocus
-                       placeholder="000000"
-                       class="w-full rounded-xl border border-gray-200 px-4 py-4 text-center text-2xl tracking-[0.5em] focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                <div data-auth-field>
+                    <input type="text" name="code" maxlength="6" pattern="[0-9]{6}" required autofocus
+                           placeholder="000000"
+                           class="w-full rounded-xl border border-gray-200 px-4 py-4 text-center text-2xl tracking-[0.5em] focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                </div>
                 <button type="submit" class="btn-primary w-full">Vérifier</button>
             </form>
         </div>

@@ -18,19 +18,19 @@
 
             @include('partials.flash')
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+            <form method="POST" action="{{ route('login') }}" class="space-y-5" data-auth-form>
                 @csrf
-                <div>
+                <div data-auth-field>
                     <label class="mb-1 block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" name="email" value="{{ old('email') }}" required autofocus
                            class="w-full rounded-xl border border-gray-200 bg-white/90 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
-                <div>
+                <div data-auth-field>
                     <label class="mb-1 block text-sm font-medium text-gray-700">Mot de passe</label>
                     <input type="password" name="password" required
                            class="w-full rounded-xl border border-gray-200 bg-white/90 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
-                <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center justify-between text-sm" data-auth-field>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="remember" class="rounded border-gray-300 text-agri-primary">
                         Se souvenir de moi

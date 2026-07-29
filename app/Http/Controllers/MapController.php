@@ -57,7 +57,7 @@ class MapController extends Controller
         } elseif ($filter === 'fields') {
             $vendors = $vendors->where('kind', 'champ')->values();
         } elseif ($filter === 'boutiques') {
-            $vendors = $vendors->whereIn('kind', ['boutique', 'depot'])->values();
+            $vendors = $vendors->whereIn('kind', ['boutique', 'depot', 'magasin'])->values();
         }
 
         if ($radius !== null && $viewerCoordinates) {

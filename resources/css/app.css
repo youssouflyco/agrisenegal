@@ -32,6 +32,19 @@
     body {
         @apply font-sans text-gray-800 antialiased;
     }
+
+    body[data-page-enter] {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+            opacity 320ms ease,
+            transform 320ms ease;
+    }
+
+    body[data-page-enter].is-ready {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @layer utilities {
@@ -78,5 +91,145 @@
 
     .agri-marker__dot--distributor {
         background: #ef6c00;
+    }
+
+    [data-reveal] {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+            opacity 600ms ease var(--reveal-delay, 0ms),
+            transform 600ms ease var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+
+    [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    [data-sticky-nav][data-scrolled="true"] {
+        @apply border-b border-soft-gray/70 bg-white/98 shadow-lg;
+    }
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.5s ease both;
+    }
+
+    .form-title {
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+        color: #1a5c28;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .form-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 72px;
+        height: 3px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #2d7a3a, #5aab4a);
+    }
+
+    .auth-field {
+        position: relative;
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+            opacity 0.5s ease,
+            transform 0.5s ease;
+        will-change: opacity, transform;
+    }
+
+    .auth-field.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .auth-field input,
+    .auth-field select,
+    .auth-field textarea {
+        width: 100%;
+        border: 1px solid rgba(45, 122, 58, 0.24);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.98);
+        padding: 1.15rem 1rem 0.8rem;
+        transition:
+            border-color 0.3s ease,
+            box-shadow 0.3s ease,
+            transform 0.3s ease;
+    }
+
+    .auth-field input:focus,
+    .auth-field select:focus,
+    .auth-field textarea:focus {
+        outline: none;
+        border-color: #2d7a3a;
+        box-shadow:
+            0 0 0 4px rgba(45, 122, 58, 0.16),
+            0 8px 22px rgba(45, 122, 58, 0.12);
+        transform: translateY(-1px);
+    }
+
+    .auth-field label {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        padding: 0 0.35rem;
+        color: #5b6b5c;
+        pointer-events: none;
+        transition:
+            top 0.3s ease,
+            color 0.3s ease,
+            font-size 0.3s ease,
+            background-color 0.3s ease;
+        background: transparent;
+    }
+
+    .auth-field.is-focused label,
+    .auth-field.is-filled label,
+    .auth-field input:focus + label,
+    .auth-field select:focus + label,
+    .auth-field textarea:focus + label {
+        top: -0.6rem;
+        font-size: 0.78rem;
+        color: #1a5c28;
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .auth-submit {
+        border-radius: 8px;
+        background: linear-gradient(90deg, #2d7a3a, #5aab4a);
+        color: #ffffff;
+        box-shadow: 0 10px 24px rgba(45, 122, 58, 0.28);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            filter 0.3s ease;
+    }
+
+    .auth-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(45, 122, 58, 0.34);
+        filter: brightness(1.03);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }

@@ -5,10 +5,9 @@
 @section('content')
 <div class="rounded-2xl bg-gradient-to-br from-agri-primary to-agri-light p-8 text-white shadow-lg">
     <h1 class="text-2xl font-bold md:text-3xl">Mes produits</h1>
-    <p class="mt-2 text-white/90">Associez chaque produit à une localisation précise.</p>
+    <p class="mt-2 text-white/90">Ajoutez vos produits avec photo, prix et quantité pour les rendre visibles dans le catalogue.</p>
     <div class="mt-5 flex flex-wrap gap-3">
         <a href="{{ route('products.create') }}" class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-agri-primary hover:bg-white/90">Ajouter un produit</a>
-        <a href="{{ route('locations.index') }}" class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes localisations</a>
     </div>
 </div>
 
@@ -17,7 +16,10 @@
         <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             @forelse($products as $product)
                 <article class="group overflow-hidden rounded-3xl border border-soft-gray bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                    <div class="h-40 bg-gradient-to-br from-agri-primary/10 via-harvest/10 to-agri-light/10 p-5">
+                    <div class="h-40 bg-gradient-to-br from-agri-primary/10 via-harvest/10 to-agri-light/10 p-0">
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-5">
                         <div class="flex items-start justify-between gap-3">
                             <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-agri-primary shadow-sm">
                                 {{ $product->is_active ? 'Actif' : 'Inactif' }}
@@ -41,8 +43,8 @@
                                 </p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs uppercase tracking-wide text-gray-400">Localisation</p>
-                                <p class="text-sm font-medium text-gray-700">{{ $product->location?->label ?? 'Non rattaché' }}</p>
+                                <p class="text-xs uppercase tracking-wide text-gray-400">Retrait</p>
+                                <p class="text-sm font-medium text-gray-700">Communiqué après commande</p>
                             </div>
                         </div>
 
@@ -67,7 +69,7 @@
 
     <div class="kpi-card">
         <h2 class="text-lg font-bold text-agri-primary">Rappel</h2>
-        <p class="mt-4 text-sm text-gray-600">Vous pouvez lier un produit à n’importe quelle localisation rattachée à votre compte.</p>
+        <p class="mt-4 text-sm text-gray-600">Le point de retrait est donné au client seulement après validation de sa commande.</p>
     </div>
 </div>
 @endsection

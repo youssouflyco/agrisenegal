@@ -16,10 +16,12 @@
 
             @include('partials.flash')
 
-            <form method="POST" action="{{ route('password.email') }}" class="mt-8 space-y-5">
+            <form method="POST" action="{{ route('password.email') }}" class="mt-8 space-y-5" data-auth-form>
                 @csrf
-                <input type="email" name="email" value="{{ old('email') }}" required placeholder="Votre email"
-                       class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                <div data-auth-field>
+                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="Votre email"
+                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                </div>
                 <button type="submit" class="btn-primary w-full">Envoyer le lien</button>
             </form>
             <a href="{{ route('login') }}" class="mt-6 block text-center text-sm text-agri-primary hover:underline">← Retour connexion</a>

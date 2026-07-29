@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\UserLocation;
+use App\Models\ProductPhoto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -16,18 +16,14 @@ class ProductController extends Controller
         $user = $request->user();
 
         return view('products.index', [
-            'products' => $user->products()->with('location')->latest()->get(),
-            'locations' => $user->locations()->orderByDesc('is_primary')->orderBy('label')->get(),
+            'products' => $user->products()->latest()->get(),
         ]);
     }
 
     public function create(Request $request): View
     {
-        $user = $request->user();
-
         return view('products.create', [
             'product' => new Product(['is_active' => true]),
-            'locations' => $user->locations()->orderByDesc('is_primary')->orderBy('label')->get(),
             'action' => route('products.store'),
             'method' => 'POST',
             'title' => 'Ajouter un produit',
@@ -42,25 +38,38 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'unit' => ['required', 'string', 'max:30'],
-            'price' => ['nullable', 'numeric', 'min:0'],
+            'unit' => ['required', 'in:kg,tonne'],
+            'price' => ['required', 'numeric', 'min:0'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'user_location_id' => ['nullable', 'exists:user_locations,id'],
+            'images' => ['required', 'array', 'min:1'],
+            'images.*' => ['image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $this->ensureOwnLocation($user, $data['user_location_id'] ?? null);
+        $uploadedImages = [];
 
-        Product::create([
+        foreach ($request->file('images') as $uploadedImage) {
+            $uploadedImages[] = $uploadedImage->store('products', 'public');
+        }
+
+        $product = Product::create([
             'user_id' => $user->id,
-            'user_location_id' => $data['user_location_id'] ?? null,
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
             'unit' => $data['unit'],
-            'price' => $data['price'] ?? null,
+            'price' => $data['price'],
             'quantity' => $data['quantity'],
+            'image_path' => $uploadedImages[0],
             'is_active' => $request->boolean('is_active', true),
         ]);
+
+        foreach ($uploadedImages as $index => $uploadedImagePath) {
+            ProductPhoto::create([
+                'product_id' => $product->id,
+                'path' => $uploadedImagePath,
+                'sort_order' => $index,
+            ]);
+        }
 
         return redirect()->route('products.index')->with('success', 'Produit créé avec succès.');
     }
@@ -71,7 +80,6 @@ class ProductController extends Controller
 
         return view('products.edit', [
             'product' => $product,
-            'locations' => $request->user()->locations()->orderByDesc('is_primary')->orderBy('label')->get(),
             'action' => route('products.update', $product),
             'method' => 'PUT',
             'title' => 'Modifier le produit',
@@ -86,22 +94,43 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'unit' => ['required', 'string', 'max:30'],
-            'price' => ['nullable', 'numeric', 'min:0'],
+            'unit' => ['required', 'in:kg,tonne'],
+            'price' => ['required', 'numeric', 'min:0'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'user_location_id' => ['nullable', 'exists:user_locations,id'],
+            'images' => ['nullable', 'array', 'min:1'],
+            'images.*' => ['image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $this->ensureOwnLocation($request->user(), $data['user_location_id'] ?? null);
+        $imagePath = $product->image_path;
+
+        if ($request->hasFile('images')) {
+            $uploadedImages = [];
+
+            foreach ($request->file('images') as $uploadedImage) {
+                $uploadedImages[] = $uploadedImage->store('products', 'public');
+            }
+
+            if (! $imagePath && count($uploadedImages) > 0) {
+                $imagePath = $uploadedImages[0];
+            }
+
+            foreach ($uploadedImages as $index => $uploadedImagePath) {
+                ProductPhoto::create([
+                    'product_id' => $product->id,
+                    'path' => $uploadedImagePath,
+                    'sort_order' => $product->photos()->count() + $index,
+                ]);
+            }
+        }
 
         $product->update([
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
             'unit' => $data['unit'],
-            'price' => $data['price'] ?? null,
+            'price' => $data['price'],
             'quantity' => $data['quantity'],
-            'user_location_id' => $data['user_location_id'] ?? null,
+            'image_path' => $imagePath,
             'is_active' => $request->boolean('is_active', false),
         ]);
 
@@ -111,6 +140,15 @@ class ProductController extends Controller
     public function destroy(Request $request, Product $product): RedirectResponse
     {
         $this->authorizeProduct($request->user(), $product);
+
+        $product->load('photos');
+
+        foreach ([$product->image_path, ...$product->photos->pluck('path')->all()] as $storedPath) {
+            if ($storedPath) {
+                Storage::disk('public')->delete($storedPath);
+            }
+        }
+
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produit supprimé.');
@@ -119,14 +157,5 @@ class ProductController extends Controller
     private function authorizeProduct($viewer, Product $product): void
     {
         abort_unless($viewer && ($viewer->id === $product->user_id || $viewer->isAdmin() || $viewer->isSuperAdmin()), 403);
-    }
-
-    private function ensureOwnLocation($viewer, ?int $locationId): void
-    {
-        if (! $locationId) {
-            return;
-        }
-
-        abort_unless($viewer->locations()->whereKey($locationId)->exists() || $viewer->isAdmin() || $viewer->isSuperAdmin(), 403);
     }
 }

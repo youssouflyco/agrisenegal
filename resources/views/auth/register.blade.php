@@ -17,54 +17,130 @@
 
             @include('partials.flash')
 
-            <form method="POST" action="{{ route('register.submit', $type) }}" class="space-y-4">
+            <form method="POST" action="{{ route('register.submit', $type) }}" class="space-y-4" enctype="multipart/form-data" data-auth-form>
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <div>
+                    <div data-auth-field>
                         <label class="mb-1 block text-sm font-medium">Prénom *</label>
                         <input type="text" name="first_name" value="{{ old('first_name') }}" required
                                class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                     </div>
-                    <div>
+                    <div data-auth-field>
                         <label class="mb-1 block text-sm font-medium">Nom *</label>
                         <input type="text" name="last_name" value="{{ old('last_name') }}" required
                                class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                     </div>
                 </div>
-                <div>
+                <div data-auth-field>
                     <label class="mb-1 block text-sm font-medium">Email *</label>
                     <input type="email" name="email" value="{{ old('email') }}" required
                            class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
-                <div>
-                    <label class="mb-1 block text-sm font-medium">Téléphone *</label>
-                          <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="+221 77 551 12 59"
+                <div data-auth-field>
+                    <label class="mb-1 block text-sm font-medium">CNI *</label>
+                    <input type="text" name="cni" value="{{ old('cni') }}" required placeholder="Numéro d'identité national"
                            class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
-                <div>
+                <div data-auth-field>
+                    <label class="mb-1 block text-sm font-medium">Téléphone *</label>
+                    <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="+221 77 551 12 59"
+                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                </div>
+                <div data-auth-field>
+                    <label class="mb-1 block text-sm font-medium">Photo de profil</label>
+                    <input type="file" name="photo" accept="image/*"
+                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                </div>
+
+                @if($type !== 'client')
+                    <div class="rounded-2xl border border-harvest/30 bg-harvest/10 p-4" data-auth-field>
+                        <h2 class="font-semibold text-agri-primary">Documents d'identité (obligatoires pour vendeurs)</h2>
+                        <p class="mt-2 text-xs text-gray-600">Ces documents nous permettent de valider votre compte avant publication.</p>
+                        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-1 block text-sm font-medium">Photo CNI recto *</label>
+                                <input type="file" name="cni_front_photo" accept="image/*" required
+                                       class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                            </div>
+                            <div>
+                                <label class="mb-1 block text-sm font-medium">Photo CNI verso *</label>
+                                <input type="file" name="cni_back_photo" accept="image/*" required
+                                       class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                            </div>
+                        </div>
+                    </div>
+
+                    @if($type === 'producteur')
+                        <div class="rounded-2xl border border-agri-primary/20 bg-agri-primary/5 p-4" data-auth-field>
+                            <h2 class="font-semibold text-agri-primary">Informations exploitation</h2>
+                            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium">Nom exploitation *</label>
+                                    <input type="text" name="farm_name" value="{{ old('farm_name') }}" required
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium">Type production *</label>
+                                    <input type="text" name="production_type" value="{{ old('production_type') }}" required placeholder="Maraîchage, céréales, fruits, etc."
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="mb-1 block text-sm font-medium">Photo exploitation (optionnel)</label>
+                                    <input type="file" name="farm_photo" accept="image/*"
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($type === 'distributeur')
+                        <div class="rounded-2xl border border-agri-primary/20 bg-agri-primary/5 p-4" data-auth-field>
+                            <h2 class="font-semibold text-agri-primary">Informations commerce</h2>
+                            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium">Nom commerce *</label>
+                                    <input type="text" name="business_name" value="{{ old('business_name') }}" required
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                                <div>
+                                    <label class="mb-1 block text-sm font-medium">Type commerce *</label>
+                                    <input type="text" name="business_type" value="{{ old('business_type') }}" required placeholder="Magasin, boutique, entrepôt, etc."
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="mb-1 block text-sm font-medium">Photo commerce (optionnel)</label>
+                                    <input type="file" name="business_photo" accept="image/*"
+                                           class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
+                <div data-auth-field>
                     <label class="mb-1 block text-sm font-medium">Mot de passe *</label>
                     <input type="password" name="password" required minlength="8"
                            class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
-                <div>
+                <div data-auth-field>
                     <label class="mb-1 block text-sm font-medium">Confirmer le mot de passe *</label>
                     <input type="password" name="password_confirmation" required
                            class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                 </div>
 
                 @if($type !== 'client')
-                    <div class="rounded-2xl border border-soft-gray bg-white/70 p-4">
+                    <div class="rounded-2xl border border-soft-gray bg-white/70 p-4" data-auth-field>
                         <div class="flex items-center justify-between gap-4">
                             <div>
-                                <h2 class="text-sm font-semibold text-agri-primary">Localisation principale</h2>
-                                <p class="text-xs text-gray-500">Ajoutez au moins un champ ou une boutique visible sur la carte. Vous pourrez ensuite en ajouter d'autres depuis votre espace.</p>
+                                <h2 class="text-sm font-semibold text-agri-primary">Lieu de dépôt principal</h2>
+                                <p class="text-xs text-gray-500">Pour les producteurs et distributeurs, renseignez seulement le nom du lieu, la région et le type de dépôt. La position sera estimée automatiquement.</p>
                             </div>
                         </div>
 
                         <div class="mt-4 grid gap-4 md:grid-cols-2">
                             <div class="md:col-span-2">
                                 <label class="mb-1 block text-sm font-medium">Nom du lieu *</label>
-                                <input type="text" name="location_name" value="{{ old('location_name') }}" placeholder="Champ de Keur Massar, Boutique centrale"
+                                <input type="text" name="location_name" value="{{ old('location_name') }}" placeholder="Champ de Keur Massar, Boutique centrale, Magasin principal"
                                        class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                             </div>
                             <div>
@@ -77,23 +153,13 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="mb-1 block text-sm font-medium">Type *</label>
+                                <label class="mb-1 block text-sm font-medium">Type de dépôt *</label>
                                 <select name="location_type" class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                                     <option value="">Sélectionner</option>
                                     @foreach($locationTypes as $locationType)
                                         <option value="{{ $locationType }}" @selected(old('location_type') === $locationType)>{{ ucfirst($locationType) }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-sm font-medium">Latitude *</label>
-                                <input type="number" name="latitude" step="0.000001" min="-90" max="90" value="{{ old('latitude') }}"
-                                       class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-sm font-medium">Longitude *</label>
-                                <input type="number" name="longitude" step="0.000001" min="-180" max="180" value="{{ old('longitude') }}"
-                                       class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -104,7 +170,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="rounded-2xl border border-soft-gray bg-white/70 p-4">
+                    <div class="rounded-2xl border border-soft-gray bg-white/70 p-4" data-auth-field>
                         <p class="text-sm text-gray-600">Vous pourrez ajouter plusieurs adresses de livraison depuis votre espace après inscription.</p>
 
                         <div class="mt-4">

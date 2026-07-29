@@ -4,7 +4,7 @@
 
 @section('content')
     {{-- Hero --}}
-    <section class="relative flex min-h-[58vh] items-start justify-center pt-16">
+    <section class="relative flex min-h-[58vh] items-start justify-center pt-16" data-reveal>
         <div class="absolute inset-0 pointer-events-none">
             <img src="{{ agri_image('hero') }}" alt="Cultivateurs sénégalais dans les champs" class="h-full w-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-agri-primary/90 via-agri-primary/70 to-transparent"></div>
@@ -14,24 +14,69 @@
                 <span class="inline-block rounded-full bg-harvest/90 px-4 py-1 text-sm font-semibold text-agri-primary">🇸🇳 Agriculture sénégalaise</span>
                 <h1 class="mt-4 text-3xl font-bold leading-tight md:text-5xl">Connectons le champ au marché</h1>
                 <p class="mt-4 text-base text-white/90 md:text-lg">La marketplace qui rapproche producteurs, distributeurs et clients pour une agriculture moderne, prospère et de confiance.</p>
-                <div class="mt-4 flex flex-wrap gap-4">
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="{{ route('catalog.products') }}" class="relative z-20 inline-flex items-center justify-center rounded-xl bg-harvest px-8 py-4 font-bold text-agri-primary transition hover:brightness-95 gap-2">
+                        <i class="bi bi-bag-check"></i> Voir le catalogue
+                    </a>
                     @auth
-                        <a href="{{ auth()->user()->homeUrl() }}" class="relative z-20 rounded-xl bg-harvest px-8 py-4 font-bold text-agri-primary">Aller au dashboard</a>
+                        <a href="{{ auth()->user()->homeUrl() }}" class="relative z-20 rounded-xl border border-white/60 bg-white/10 px-8 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20">Mon tableau de bord</a>
                         <form method="POST" action="{{ route('logout') }}" class="relative z-20">
                             @csrf
                             <button type="submit" class="rounded-xl border-2 border-white px-8 py-4 font-bold text-white">Se déconnecter</button>
                         </form>
                     @else
-                        <a href="{{ url('/inscription') }}" class="relative z-20 rounded-xl bg-harvest px-8 py-4 font-bold text-agri-primary">S'inscrire</a>
+                        <a href="{{ url('/inscription') }}" class="relative z-20 rounded-xl border border-white/60 bg-white/10 px-8 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20">S'inscrire</a>
                         <a href="{{ url('/connexion') }}" class="relative z-20 rounded-xl border-2 border-white px-8 py-4 font-bold text-white">Se connecter</a>
                     @endauth
+                </div>
+                <div class="mt-6 grid gap-3 text-sm sm:grid-cols-3">
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-shield-check me-2"></i>Compte sécurisé</div>
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-truck me-2"></i>Livraison et retrait</div>
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-geo-alt me-2"></i>Localisation intégrée</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20" data-reveal>
+        <div class="mx-auto max-w-7xl px-4 md:px-6">
+            <div class="grid gap-6 lg:grid-cols-3">
+                <div class="rounded-3xl bg-gradient-to-br from-agri-primary to-agri-light p-8 text-white shadow-lg lg:col-span-2">
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-harvest">Pourquoi nous choisir</p>
+                    <h2 class="mt-3 text-3xl font-bold">Une expérience pensée pour le commerce agricole sénégalais</h2>
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                        @foreach([
+                            ['icon' => 'bi bi-lock-fill', 'title' => 'Sécurité', 'desc' => 'Comptes protégés, sessions sécurisées et rôles contrôlés.'],
+                            ['icon' => 'bi bi-geo-alt-fill', 'title' => 'Localisation', 'desc' => 'Repérage des vendeurs et des points de vente.'],
+                            ['icon' => 'bi bi-lightning-charge-fill', 'title' => 'Rapidité', 'desc' => 'Parcours fluide, responsive et pensé mobile-first.'],
+                            ['icon' => 'bi bi-graph-up-arrow', 'title' => 'Pilotage', 'desc' => 'Statistiques et tableaux de bord pour mieux décider.'],
+                        ] as $item)
+                            <div class="rounded-2xl bg-white/10 p-4 backdrop-blur">
+                                <i class="{{ $item['icon'] }} text-2xl text-harvest"></i>
+                                <h3 class="mt-3 font-bold">{{ $item['title'] }}</h3>
+                                <p class="mt-2 text-sm text-white/85">{{ $item['desc'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="rounded-3xl border border-soft-gray bg-white p-8 shadow-sm">
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-agri-primary">FAQ</p>
+                    <h2 class="mt-3 text-2xl font-bold text-gray-900">Questions fréquentes</h2>
+                    <div class="mt-6 space-y-4">
+                        @foreach($faqs as $faq)
+                            <details class="rounded-2xl border border-soft-gray bg-soft-gray/40 p-4">
+                                <summary class="cursor-pointer font-semibold text-gray-900">{{ $faq['question'] }}</summary>
+                                <p class="mt-3 text-sm text-gray-600">{{ $faq['answer'] }}</p>
+                            </details>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     {{-- Présentation --}}
-    <section id="presentation" class="py-20">
+    <section id="presentation" class="py-20" data-reveal>
         <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
             <div>
                 <h2 class="section-title">Une plateforme au service du rural</h2>
@@ -52,7 +97,7 @@
     </section>
 
     {{-- Fonctionnalités --}}
-    <section id="fonctionnalites" class="bg-soft-gray py-20">
+    <section id="fonctionnalites" class="bg-soft-gray py-20" data-reveal>
         <div class="mx-auto max-w-7xl px-4 md:px-6">
             <div class="text-center">
                 <h2 class="section-title">Fonctionnalités clés</h2>
@@ -67,7 +112,7 @@
                     ['icon' => '📊', 'title' => 'Tableaux de bord', 'desc' => 'Statistiques et indicateurs pour piloter votre activité.'],
                     ['icon' => '🛡️', 'title' => 'Sécurité', 'desc' => 'Vérification des acteurs et gestion des réclamations.'],
                 ] as $feature)
-                    <div class="rounded-2xl bg-white p-8 shadow-md transition hover:-translate-y-1 hover:shadow-xl">
+                    <div class="rounded-2xl bg-white p-8 shadow-md transition hover:-translate-y-1 hover:shadow-xl" data-reveal>
                         <span class="text-4xl">{{ $feature['icon'] }}</span>
                         <h3 class="mt-4 text-xl font-bold text-agri-primary">{{ $feature['title'] }}</h3>
                         <p class="mt-2 text-gray-600">{{ $feature['desc'] }}</p>
@@ -78,7 +123,7 @@
     </section>
 
     {{-- Producteurs --}}
-    <section id="producteurs" class="py-20">
+    <section id="producteurs" class="py-20" data-reveal>
         <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
             <img src="{{ agri_image('producer') }}" alt="Producteur agricole sénégalais" class="order-2 rounded-3xl shadow-2xl md:order-1">
             <div class="order-1 md:order-2">
@@ -90,7 +135,7 @@
     </section>
 
     {{-- Distributeurs --}}
-    <section id="distributeurs" class="bg-agri-primary/5 py-20">
+    <section id="distributeurs" class="bg-agri-primary/5 py-20" data-reveal>
         <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
             <div>
                 <h2 class="section-title">Pour les distributeurs</h2>
@@ -102,7 +147,7 @@
     </section>
 
     {{-- Statistiques --}}
-    <section class="py-20">
+    <section class="py-20" data-reveal>
         <div class="mx-auto max-w-7xl px-4 md:px-6">
             <div class="rounded-3xl bg-gradient-to-br from-agri-primary to-agri-light p-12 text-white">
                 <div class="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
@@ -118,7 +163,7 @@
     </section>
 
     {{-- Témoignages --}}
-    <section class="bg-soft-gray py-20">
+    <section class="bg-soft-gray py-20" data-reveal>
         <div class="mx-auto max-w-7xl px-4 md:px-6">
             <h2 class="section-title text-center">Ils nous font confiance</h2>
             <div class="mt-14 grid gap-8 md:grid-cols-3">
@@ -127,7 +172,7 @@
                     ['name' => 'Fatou Diop', 'role' => 'Distributrice', 'text' => 'La traçabilité et la qualité des producteurs m\'ont convaincue.'],
                     ['name' => 'Moussa Gueye', 'role' => 'Client professionnel', 'text' => 'Commandes simples, livraisons fiables. Un vrai gain de temps.'],
                 ] as $t)
-                    <div class="rounded-2xl bg-white p-8 shadow-md">
+                    <div class="rounded-2xl bg-white p-8 shadow-md" data-reveal>
                         <p class="text-gray-600 italic">"{{ $t['text'] }}"</p>
                         <div class="mt-6 flex items-center gap-4">
                             <img src="{{ agri_image('testimonial') }}" alt="" class="h-12 w-12 rounded-full object-cover">
@@ -143,7 +188,7 @@
     </section>
 
     {{-- Contact --}}
-    <section id="contact" class="py-20">
+    <section id="contact" class="py-20" data-reveal>
         <div class="mx-auto max-w-3xl px-4 text-center md:px-6">
             <h2 class="section-title">Contactez-nous</h2>
             <p class="mt-4 text-gray-600">Une question ? Notre équipe vous répond sous 24h.</p>

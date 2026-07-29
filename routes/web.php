@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Distributor\DashboardController as DistributorDashboardController;
 use App\Http\Controllers\LocationController;
@@ -48,7 +49,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 Route::get('/map', fn () => redirect('/carte-agricole', 301));
 Route::get('/locations', fn () => redirect('/mes-localisations', 301));
 Route::get('/products', fn () => redirect('/mes-produits', 301));
-Route::middleware('auth')->get('/catalogue-produits', [ProductCatalogController::class, 'index'])->name('catalog.products');
+Route::get('/catalogue-produits', [ProductCatalogController::class, 'index'])->name('catalog.products');
+Route::get('/catalogue-produits/{product}', [ProductCatalogController::class, 'show'])->name('catalog.products.show');
+Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+Route::post('/panier/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::put('/panier/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/panier/{product}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/panier/commander', [CartController::class, 'checkout'])->name('cart.checkout');
 
 Route::get('/password/reset/{token}', function (string $token) {
     return redirect()->route('password.reset', ['token' => $token]);

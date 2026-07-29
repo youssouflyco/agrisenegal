@@ -13,12 +13,18 @@
         <div class="glass-card rounded-3xl p-8">
             <h1 class="text-2xl font-bold text-agri-primary">Nouveau mot de passe</h1>
             @include('partials.flash')
-            <form method="POST" action="{{ route('password.update') }}" class="mt-6 space-y-4">
+            <form method="POST" action="{{ route('password.update') }}" class="mt-6 space-y-4" data-auth-form>
                 @csrf
                 <input type="hidden" name="token" value="{{ $token }}">
-                <input type="email" name="email" value="{{ $email }}" required class="w-full rounded-xl border px-4 py-3">
-                <input type="password" name="password" required placeholder="Nouveau mot de passe" class="w-full rounded-xl border px-4 py-3">
-                <input type="password" name="password_confirmation" required placeholder="Confirmer" class="w-full rounded-xl border px-4 py-3">
+                <div data-auth-field>
+                    <input type="email" name="email" value="{{ $email }}" required class="w-full rounded-xl border px-4 py-3">
+                </div>
+                <div data-auth-field>
+                    <input type="password" name="password" required placeholder="Nouveau mot de passe" class="w-full rounded-xl border px-4 py-3">
+                </div>
+                <div data-auth-field>
+                    <input type="password" name="password_confirmation" required placeholder="Confirmer" class="w-full rounded-xl border px-4 py-3">
+                </div>
                 <button type="submit" class="btn-primary w-full">Réinitialiser</button>
             </form>
         </div>

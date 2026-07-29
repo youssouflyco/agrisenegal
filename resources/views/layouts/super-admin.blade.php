@@ -7,11 +7,16 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Dashboard') — {{ config('agri.name') }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     @stack('head')
+    @stack('styles')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-soft-gray/50">
-    <div class="flex min-h-screen">
+<body class="relative min-h-screen overflow-x-hidden bg-soft-gray/50">
+    <div class="pointer-events-none fixed inset-0 -z-20 bg-cover bg-fixed bg-center" style="background-image: url('{{ agri_image('fields') }}');"></div>
+    <div class="pointer-events-none fixed inset-0 -z-10 bg-[rgba(34,85,34,0.55)]"></div>
+
+    <div class="relative z-10 flex min-h-screen">
         @include('super-admin.partials.sidebar')
 
         <div class="flex flex-1 flex-col lg:ml-72">

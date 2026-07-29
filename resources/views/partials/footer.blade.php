@@ -8,6 +8,7 @@
             <div>
                 <h4 class="font-semibold text-harvest">Liens</h4>
                 <ul class="mt-3 space-y-2 text-sm text-white/80">
+                    <li><a href="{{ route('catalog.products') }}" class="hover:text-white">Catalogue</a></li>
                     <li><a href="#presentation" class="hover:text-white">Présentation</a></li>
                     <li><a href="#fonctionnalites" class="hover:text-white">Fonctionnalités</a></li>
                     <li><a href="#contact" class="hover:text-white">Contact</a></li>

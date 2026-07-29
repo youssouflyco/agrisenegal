@@ -46,6 +46,7 @@ class UserLocation extends Model
     {
         return match ($this->kind) {
             'champ' => 'Champ',
+            'magasin' => 'Magasin',
             'boutique' => 'Boutique',
             'depot' => 'Dépôt',
             'maison' => 'Maison',
