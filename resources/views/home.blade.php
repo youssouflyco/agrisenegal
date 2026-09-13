@@ -14,25 +14,10 @@
                 <span class="inline-block rounded-full bg-harvest/90 px-4 py-1 text-sm font-semibold text-agri-primary">🇸🇳 Agriculture sénégalaise</span>
                 <h1 class="mt-4 text-3xl font-bold leading-tight md:text-5xl">Connectons le champ au marché</h1>
                 <p class="mt-4 text-base text-white/90 md:text-lg">La marketplace qui rapproche producteurs, distributeurs et clients pour une agriculture moderne, prospère et de confiance.</p>
-                <div class="mt-8 flex flex-wrap gap-4">
-                    <a href="{{ route('catalog.products') }}" class="relative z-20 inline-flex items-center justify-center rounded-xl bg-harvest px-8 py-4 font-bold text-agri-primary transition hover:brightness-95 gap-2">
-                        <i class="bi bi-bag-check"></i> Voir le catalogue
-                    </a>
-                    @auth
-                        <a href="{{ auth()->user()->homeUrl() }}" class="relative z-20 rounded-xl border border-white/60 bg-white/10 px-8 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20">Mon tableau de bord</a>
-                        <form method="POST" action="{{ route('logout') }}" class="relative z-20">
-                            @csrf
-                            <button type="submit" class="rounded-xl border-2 border-white px-8 py-4 font-bold text-white">Se déconnecter</button>
-                        </form>
-                    @else
-                        <a href="{{ url('/inscription') }}" class="relative z-20 rounded-xl border border-white/60 bg-white/10 px-8 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20">S'inscrire</a>
-                        <a href="{{ url('/connexion') }}" class="relative z-20 rounded-xl border-2 border-white px-8 py-4 font-bold text-white">Se connecter</a>
-                    @endauth
-                </div>
                 <div class="mt-6 grid gap-3 text-sm sm:grid-cols-3">
-                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-shield-check me-2"></i>Compte sécurisé</div>
-                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-truck me-2"></i>Livraison et retrait</div>
-                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-geo-alt me-2"></i>Localisation intégrée</div>
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-shield-check me-2"></i>Simple</div>
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-lightning-charge-fill me-2"></i>Rapide</div>
+                    <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><i class="bi bi-lock-fill me-2"></i>Securisé</div>
                 </div>
             </div>
         </div>
@@ -47,9 +32,9 @@
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
                         @foreach([
                             ['icon' => 'bi bi-lock-fill', 'title' => 'Sécurité', 'desc' => 'Comptes protégés, sessions sécurisées et rôles contrôlés.'],
-                            ['icon' => 'bi bi-geo-alt-fill', 'title' => 'Localisation', 'desc' => 'Repérage des vendeurs et des points de vente.'],
-                            ['icon' => 'bi bi-lightning-charge-fill', 'title' => 'Rapidité', 'desc' => 'Parcours fluide, responsive et pensé mobile-first.'],
-                            ['icon' => 'bi bi-graph-up-arrow', 'title' => 'Pilotage', 'desc' => 'Statistiques et tableaux de bord pour mieux décider.'],
+                            ['icon' => 'bi bi-shield-check', 'title' => 'Simplicité', 'desc' => 'Interface intuitive et parcours utilisateur fluide.'],
+                            ['icon' => 'bi bi-lightning-charge-fill', 'title' => 'Rapidité', 'desc' => 'Livraison rapide.'],
+                            ['icon' => 'bi bi-graph-up-arrow', 'title' => 'Statistiques', 'desc' => 'Tableaux de bord intégrés.'],
                         ] as $item)
                             <div class="rounded-2xl bg-white/10 p-4 backdrop-blur">
                                 <i class="{{ $item['icon'] }} text-2xl text-harvest"></i>
@@ -96,36 +81,10 @@
         </div>
     </section>
 
-    {{-- Fonctionnalités --}}
-    <section id="fonctionnalites" class="bg-soft-gray py-20" data-reveal>
-        <div class="mx-auto max-w-7xl px-4 md:px-6">
-            <div class="text-center">
-                <h2 class="section-title">Fonctionnalités clés</h2>
-                <p class="mt-4 text-gray-600">Tout ce dont vous avez besoin pour digitaliser votre activité agricole</p>
-            </div>
-            <div class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach([
-                    ['icon' => '🌾', 'title' => 'Catalogue produits', 'desc' => 'Mettez en valeur vos récoltes avec photos et descriptions détaillées.'],
-                    ['icon' => '📦', 'title' => 'Commandes en ligne', 'desc' => 'Gérez vos commandes de A à Z avec suivi en temps réel.'],
-                    ['icon' => '💳', 'title' => 'Paiements mobiles', 'desc' => 'Orange Money, Wave et virements intégrés.'],
-                    ['icon' => '🚚', 'title' => 'Logistique', 'desc' => 'Coordonnez livraisons et points de collecte.'],
-                    ['icon' => '📊', 'title' => 'Tableaux de bord', 'desc' => 'Statistiques et indicateurs pour piloter votre activité.'],
-                    ['icon' => '🛡️', 'title' => 'Sécurité', 'desc' => 'Vérification des acteurs et gestion des réclamations.'],
-                ] as $feature)
-                    <div class="rounded-2xl bg-white p-8 shadow-md transition hover:-translate-y-1 hover:shadow-xl" data-reveal>
-                        <span class="text-4xl">{{ $feature['icon'] }}</span>
-                        <h3 class="mt-4 text-xl font-bold text-agri-primary">{{ $feature['title'] }}</h3>
-                        <p class="mt-2 text-gray-600">{{ $feature['desc'] }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
     {{-- Producteurs --}}
     <section id="producteurs" class="py-20" data-reveal>
         <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 md:grid-cols-2 md:px-6">
-            <img src="{{ agri_image('producer') }}" alt="Producteur agricole sénégalais" class="order-2 rounded-3xl shadow-2xl md:order-1">
+            <img src="{{ agri_image('presentation') }}" alt="Producteur agricole sénégalais" class="order-2 rounded-3xl shadow-2xl md:order-1">
             <div class="order-1 md:order-2">
                 <h2 class="section-title">Pour les producteurs</h2>
                 <p class="mt-6 text-lg text-gray-600">Vendez directement vos récoltes, fixez vos prix et développez votre clientèle sans intermédiaires abusifs.</p>
@@ -142,7 +101,7 @@
                 <p class="mt-6 text-lg text-gray-600">Accédez à un réseau fiable de producteurs locaux et optimisez votre chaîne d'approvisionnement.</p>
                 <a href="{{ route('register.form', 'distributeur') }}" class="btn-secondary mt-8">Devenir distributeur</a>
             </div>
-            <img src="{{ agri_image('distributor') }}" alt="Distribution agricole" class="rounded-3xl shadow-2xl">
+            <img src="{{ agri_image('presentation') }}" alt="Distribution agricole" class="rounded-3xl shadow-2xl">
         </div>
     </section>
 
@@ -184,23 +143,6 @@
                     </div>
                 @endforeach
             </div>
-        </div>
-    </section>
-
-    {{-- Contact --}}
-    <section id="contact" class="py-20" data-reveal>
-        <div class="mx-auto max-w-3xl px-4 text-center md:px-6">
-            <h2 class="section-title">Contactez-nous</h2>
-            <p class="mt-4 text-gray-600">Une question ? Notre équipe vous répond sous 24h.</p>
-            <form class="mt-10 space-y-4 text-left" action="#" method="POST">
-                @csrf
-                <div class="grid gap-4 md:grid-cols-2">
-                    <input type="text" placeholder="Nom complet" class="w-full rounded-xl border border-soft-gray px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
-                    <input type="email" placeholder="Email" class="w-full rounded-xl border border-soft-gray px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
-                </div>
-                <textarea rows="4" placeholder="Votre message" class="w-full rounded-xl border border-soft-gray px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30"></textarea>
-                <button type="submit" class="btn-primary w-full md:w-auto">Envoyer</button>
-            </form>
         </div>
     </section>
 @endsection

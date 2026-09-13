@@ -25,6 +25,7 @@ use App\Http\Controllers\SuperAdmin\OrderController as SuperAdminOrderController
 use App\Http\Controllers\SuperAdmin\WithdrawalController as SuperAdminWithdrawalController;
 use App\Http\Controllers\SuperAdmin\PlaceholderController;
 use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -46,6 +47,7 @@ Route::post('/two-factor-challenge', [LoginController::class, 'verifyTwoFactor']
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/map', fn () => redirect('/carte-agricole', 301));
 Route::get('/locations', fn () => redirect('/mes-localisations', 301));
 Route::get('/products', fn () => redirect('/mes-produits', 301));
