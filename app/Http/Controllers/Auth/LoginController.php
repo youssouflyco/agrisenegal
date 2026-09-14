@@ -10,7 +10,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
-use PragmaRX\Google2FA\Google2FA;
 
 class LoginController extends Controller
 {
@@ -39,15 +38,11 @@ class LoginController extends Controller
         }
 
         if (! $user->canLogin()) {
-            return back()->withErrors(['email' => 'Votre compte est suspendu ou archivé.'])->onlyInput('email');
+            return back()->withErrors(['email' => 'Votre compte est suspendu.'])->onlyInput('email');
         }
 
         $request->session()->put('login.id', $user->id);
         $request->session()->put('login.remember', $request->boolean('remember'));
-
-        if ($user->two_factor_enabled && $user->two_factor_secret) {
-            return redirect()->route('two-factor.challenge');
-        }
 
         return $this->authenticateUser($request, $user);
     }
@@ -80,34 +75,5 @@ class LoginController extends Controller
             'Pragma' => 'no-cache',
             'Expires' => 'Fri, 01 Jan 1990 00:00:00 GMT',
         ];
-    }
-
-    public function showTwoFactorChallenge(): View|RedirectResponse
-    {
-        if (! session('login.id')) {
-            return redirect()->route('login');
-        }
-
-        return view('auth.two-factor-challenge');
-    }
-
-    public function verifyTwoFactor(Request $request): RedirectResponse
-    {
-        $request->validate(['code' => ['required', 'string', 'size:6']]);
-
-        $user = User::find(session('login.id'));
-
-        if (! $user || ! $user->two_factor_secret) {
-            return redirect()->route('login');
-        }
-
-        $google2fa = new Google2FA;
-        $valid = $google2fa->verifyKey($user->two_factor_secret, $request->code);
-
-        if (! $valid) {
-            return back()->withErrors(['code' => 'Code de vérification invalide.']);
-        }
-
-        return $this->authenticateUser($request, $user);
     }
 }

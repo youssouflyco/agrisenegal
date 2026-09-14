@@ -48,6 +48,7 @@ Route::post('/two-factor-challenge', [LoginController::class, 'verifyTwoFactor']
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 Route::get('/map', fn () => redirect('/carte-agricole', 301));
 Route::get('/locations', fn () => redirect('/mes-localisations', 301));
 Route::get('/products', fn () => redirect('/mes-produits', 301));
@@ -73,9 +74,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/connexion', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/connexion', [LoginController::class, 'login']);
 
-    Route::get('/inscription', [RegisterController::class, 'showRegistrationHub'])->name('register');
-    Route::get('/inscription/{type}', [RegisterController::class, 'showRegistrationForm'])->name('register.form');
-    Route::post('/inscription/{type}', [RegisterController::class, 'register'])->name('register.submit');
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.form');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 
     Route::get('/mot-de-passe-oublie', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/mot-de-passe-oublie', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');

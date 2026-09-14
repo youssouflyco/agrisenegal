@@ -42,7 +42,7 @@
 
             <p class="mt-6 text-center text-sm text-gray-600">
                 Pas encore de compte ?
-                <a href="{{ url('/inscription') }}" class="font-semibold text-agri-primary hover:underline">S'inscrire</a>
+                <a href="{{ url('/register') }}" class="font-semibold text-agri-primary hover:underline">S'inscrire</a>
             </p>
 
             <a href="{{ route('home') }}" class="mt-4 block text-center text-sm text-gray-500 hover:text-agri-primary">← Retour à l'accueil</a>

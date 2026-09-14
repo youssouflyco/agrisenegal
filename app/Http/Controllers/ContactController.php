@@ -11,4 +11,11 @@ class ContactController extends Controller
     {
         return view('contact');
     }
+
+    public function submit(): View
+    {
+        return view('contact')->with('success', 'Votre message a été envoyé avec succès !');
+    }
 }
+
+
