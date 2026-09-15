@@ -15,6 +15,7 @@ use App\Http\Controllers\ProductCatalogController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Producer\DashboardController as ProducerDashboardController;
+use App\Http\Controllers\BusinessProfileController;
 use App\Http\Controllers\WithdrawalRequestController;
 use App\Http\Controllers\SuperAdmin\AdminController;
 use App\Http\Controllers\SuperAdmin\AuditLogController;
@@ -41,9 +42,6 @@ Route::post('/register/{type}', [RegisterController::class, 'register']);
 
 Route::get('/forgot-password', fn () => redirect('/mot-de-passe-oublie', 301));
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-
-Route::get('/two-factor-challenge', fn () => redirect('/double-authentification', 301));
-Route::post('/two-factor-challenge', [LoginController::class, 'verifyTwoFactor']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
@@ -83,9 +81,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/reinitialiser-mot-de-passe', [ForgotPasswordController::class, 'reset'])->name('password.update');
 });
 
-Route::get('/double-authentification', [LoginController::class, 'showTwoFactorChallenge'])->name('two-factor.challenge');
-Route::post('/double-authentification', [LoginController::class, 'verifyTwoFactor'])->name('two-factor.verify');
-
 Route::post('/deconnexion', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->get('/carte-agricole', [MapController::class, 'index'])->name('agri.map');
@@ -107,11 +102,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/parametres/mot-de-passe', [\App\Http\Controllers\SettingsController::class, 'updatePassword'])->name('settings.password.update');
     Route::get('/parametres/supprimer', [\App\Http\Controllers\SettingsController::class, 'delete'])->name('settings.delete');
     Route::delete('/parametres/supprimer', [\App\Http\Controllers\SettingsController::class, 'destroy'])->name('settings.destroy');
-    Route::middleware(['role:admin,super_admin'])->group(function () {
-        Route::get('/parametres/2fa', [TwoFactorController::class, 'setup'])->name('settings.two-factor');
-        Route::post('/parametres/2fa', [TwoFactorController::class, 'confirm'])->name('settings.two-factor.confirm');
-        Route::post('/parametres/2fa/desactiver', [TwoFactorController::class, 'disable'])->name('settings.two-factor.disable');
-    });
 });
 
 Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->group(function () {
@@ -151,6 +141,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 });
 
+    // Business Profile routes
+    Route::get('/business-profile',[BusinessProfileController::class, 'show'])->name('business-profile.show');
+    Route::get('/business-profile/create',[BusinessProfileController::class, 'create'])->name('business-profile.create');
+    Route::post('/business-profile',[BusinessProfileController::class, 'store'])->name('business-profile.store');
+
 Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -184,12 +179,7 @@ Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_a
 
     Route::get('/audit', [AuditLogController::class, 'index'])->name('audit.index');
     Route::get('/audit/export/{format}', [AuditLogController::class, 'export'])->name('audit.export');
-
     Route::get('/localisations', [MapController::class, 'index'])->name('locations');
-
-    Route::get('/2fa/configuration', [TwoFactorController::class, 'setup'])->name('two-factor.setup');
-    Route::post('/2fa/configuration', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
-    Route::post('/2fa/desactiver', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
 
     $sections = [
         'producers' => 'producteurs',

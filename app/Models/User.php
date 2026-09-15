@@ -26,31 +26,17 @@ class User extends Authenticatable
         'last_name',
         'email',
         'phone',
-        'cni',
-        'cni_front_photo',
-        'cni_back_photo',
-        'farm_name',
-        'production_type',
-        'farm_photo',
-        'business_name',
-        'business_type',
-        'business_photo',
         'photo',
         'password',
         'role',
         'status',
-        'two_factor_secret',
-        'two_factor_confirmed_at',
-        'two_factor_enabled',
         'suspended_at',
-        'archived_at',
         'created_by',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_secret',
     ];
 
     protected function casts(): array
@@ -60,10 +46,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
             'status' => UserStatus::class,
-            'two_factor_confirmed_at' => 'datetime',
-            'two_factor_enabled' => 'boolean',
             'suspended_at' => 'datetime',
-            'archived_at' => 'datetime',
         ];
     }
 
@@ -174,5 +157,10 @@ class User extends Authenticatable
     public function scopeNotArchived($query)
     {
         return $query->where('status', '!=', UserStatus::Archived);
+    }
+
+    public function businessProfile(): HasOne
+    {
+      return $this->hasOne(BusinessProfile::class);
     }
 }

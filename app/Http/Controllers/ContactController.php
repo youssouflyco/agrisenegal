@@ -14,7 +14,7 @@ class ContactController extends Controller
 
     public function submit(): View
     {
-        return view('contact')->with('success', 'Votre message a été envoyé avec succès !');
+        return view('contact')->withMessage('success', 'Votre message a été envoyé avec succès !');
     }
 }
 

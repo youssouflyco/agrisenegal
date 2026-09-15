@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Constants\UserRoleConstants;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -15,11 +16,6 @@ use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-    private const ALLOWED_ROLES = [
-        'client' => UserRole::Client,
-        'producteur' => UserRole::Producer,
-        'distributeur' => UserRole::Distributor,
-    ];
 
     public function showRegistrationForm(): View|RedirectResponse
     {
@@ -34,7 +30,7 @@ class RegisterController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Password::min(8)],
-            'role' => ['required', 'in:'.implode(',', array_keys(self::ALLOWED_ROLES))],
+            'role' => ['required', 'in:'.implode(',', array_keys(UserRoleConstants::ALLOWED_ROLES))],
         ]);
 
         $user = User::create([
@@ -43,7 +39,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'],
             'password' => $data['password'],
-            'role' =>  self::ALLOWED_ROLES[$data['role']],
+            'role' =>  UserRoleConstants::ALLOWED_ROLES[$data['role']],
             'status' => in_array($data['role'], [UserRole::Producer, UserRole::Distributor], true) ? UserStatus::Pending : UserStatus::Active,
         ]);
 
