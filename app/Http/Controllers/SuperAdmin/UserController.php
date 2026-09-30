@@ -16,8 +16,6 @@ class UserController extends Controller
     public function index(): View
     {
         $users = User::query()
-            ->where('status', '!=', UserStatus::Archived)
-            ->whereNull('archived_at')
             ->latest()
             ->paginate(15);
 
@@ -34,14 +32,16 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
+            'first_name' => ['required', 'string', 'max:150'],
+            'last_name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', Rule::in(array_map(fn (UserRole $role) => $role->value, UserRole::cases()))],
         ]);
 
         User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => $data['password'],
             'role' => $data['role'],
@@ -64,14 +64,16 @@ class UserController extends Controller
     public function update(Request $request, User $user): RedirectResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
+            'first_name' => ['required', 'string', 'max:150'],
+            'last_name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role' => ['required', Rule::in(array_map(fn (UserRole $role) => $role->value, UserRole::cases()))],
         ]);
 
         $updateData = [
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'role' => $data['role'],
         ];

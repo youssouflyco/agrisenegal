@@ -149,6 +149,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Business Profile routes for Super Admin
+    Route::get('/business-profiles/{businessType}',[BusinessProfileController::class, 'index'])->name('business-profiles');
+    Route::get('/business-profiles/{id}/review',[BusinessProfileController::class, 'review'])->name('business-profiles.review');
+    Route::post('/business-profiles/{id}/approve',[BusinessProfileController::class, 'approve'])->name('business-profiles.approve');
+    Route::post('/business-profiles/{id}/reject',[BusinessProfileController::class, 'reject'])->name('business-profiles.reject');
+
+
+
     Route::get('/produits', [ProductCatalogController::class, 'index'])->name('products');
     Route::get('/commandes', [SuperAdminOrderController::class, 'index'])->name('orders');
     Route::get('/reclamations', [SuperAdminComplaintController::class, 'index'])->name('claims');

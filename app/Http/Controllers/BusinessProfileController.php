@@ -6,6 +6,7 @@ use App\Models\BusinessProfile;
 use App\Enums\UserRole;
 use App\Constants\UserRoleConstants;
 use Illuminate\Http\RedirectResponse;
+use App\Services\FileUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,8 @@ use Illuminate\View\View;
 
 class BusinessProfileController extends Controller
 {
+    public function __construct(private FileUploader $fileUploader) {}
+
     /**
      * Show the business profile form.
      */
@@ -96,11 +99,12 @@ DB::transaction(function () use ($request, $validated, $user) {
                         );
                     }
 
-                    $validated[$file] = $request
-                        ->file($file)
-                        ->store('business-profiles', 'public');
+                    $validated[$file] = $this->fileUploader->uploadFile(
+                        $request->file($file)
+                    );
                 }
             }
+
 
             $validated['user_id'] = $user->id;
             $validated['verification_status'] = 'PENDING';
@@ -139,38 +143,42 @@ DB::transaction(function () use ($request, $validated, $user) {
     }
 
     /**
-     * Admin: list pending business profiles.
+     * Admin: list of business profiles.
      */
-    public function pending(): View
+    public function index(Request $request, string $businessType): View
     {
-        $profiles = BusinessProfile::query()
-            ->with('user')
-            ->where('verification_status', 'PENDING')
-            ->latest()
-            ->paginate(20);
+       $profiles = BusinessProfile::query()
+        ->where('business_type', $businessType)
+        ->latest()
+        ->paginate(20)
+        ->withQueryString();
 
-        return view('admin.business-profiles.pending', compact('profiles'));
+        return view('business-profiles.admin.index', [
+        'title' => $businessType ?? ucfirst($businessType),
+        'businessType' => $businessType,
+        'profiles' => $profiles,
+        ]);
+
     }
 
     /**
      * Admin: show a business profile for review.
      */
-    public function review(BusinessProfile $businessProfile): View
+    public function review(string $id): View
     {
-        $businessProfile->load('user');
+      $profile = BusinessProfile::with('user')->findOrFail($id);
 
-        return view(
-            'admin.business-profiles.review',
-            compact('businessProfile')
-        );
+      return view('business-profiles.admin.review', compact('profile'));
     }
 
     /**
      * Admin: approve a business profile.
      */
     public function approve(
-        BusinessProfile $businessProfile
+        string $id
     ): RedirectResponse {
+        $businessProfile = BusinessProfile::findOrFail($id);
+
         if ($businessProfile->verification_status !== 'PENDING') {
             return back()->with(
                 'error',
@@ -185,7 +193,7 @@ DB::transaction(function () use ($request, $validated, $user) {
         ]);
 
         return redirect()
-            ->route('admin.business-profiles.pending')
+            ->route('admin.business-profiles.review', $businessProfile->id)
             ->with(
                 'success',
                 'Le profil a été approuvé avec succès.'
@@ -196,8 +204,8 @@ DB::transaction(function () use ($request, $validated, $user) {
      * Admin: reject a business profile.
      */
     public function reject(
+        string $id,
         Request $request,
-        BusinessProfile $businessProfile
     ): RedirectResponse {
         $validated = $request->validate([
             'rejection_reason' => [
@@ -206,6 +214,8 @@ DB::transaction(function () use ($request, $validated, $user) {
                 'max:1000',
             ],
         ]);
+
+        $businessProfile = BusinessProfile::findOrFail($id);
 
         if ($businessProfile->verification_status !== 'PENDING') {
             return back()->with(
@@ -221,7 +231,7 @@ DB::transaction(function () use ($request, $validated, $user) {
         ]);
 
         return redirect()
-            ->route('admin.business-profiles.pending')
+            ->route('admin.business-profiles.review', $businessProfile->id)
             ->with(
                 'success',
                 'Le profil a été rejeté.'

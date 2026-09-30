@@ -11,8 +11,8 @@
 
 <div class="rounded-2xl bg-white p-6 shadow-md">
     <div class="mb-5 flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-agri-primary">Utilisateurs non archivés</h3>
-        <a href="{{ route('super-admin.users.archives') }}" class="text-sm font-semibold text-agri-primary hover:underline">Voir les archives</a>
+        <h3 class="text-lg font-semibold text-agri-primary">Utilisateurs</h3>
+        <a href="{{ route('super-admin.users.archives') }}" class="text-sm font-semibold text-agri-primary hover:underline"></a>
     </div>
 
     <div class="overflow-x-auto">
@@ -30,7 +30,7 @@
             <tbody class="divide-y divide-soft-gray">
                 @forelse($users as $user)
                     <tr class="hover:bg-soft-gray/30">
-                        <td class="px-4 py-3 font-medium">{{ $user->name }}</td>
+                        <td class="px-4 py-3 font-medium">{{ $user->first_name." ".$user->last_name }}</td>
                         <td class="px-4 py-3">{{ $user->email }}</td>
                         <td class="px-4 py-3">{{ $user->role->label() }}</td>
                         <td class="px-4 py-3">
@@ -45,20 +45,12 @@
                                     <a href="{{ route('super-admin.users.edit', $user) }}" class="text-xs text-gray-700 hover:underline">Modifier</a>
                                     <form method="POST" action="{{ route('super-admin.users.bloquer', $user->id) }}">
                                         @csrf
-                                        <button type="submit" class="text-xs text-orange-600 hover:underline">Bloquer</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('super-admin.users.archiver', $user->id) }}">
-                                        @csrf
-                                        <button type="submit" class="text-xs text-gray-600 hover:underline">Archiver</button>
+                                        <button type="submit" class="text-xs text-orange-600 hover:underline">Suspendre</button>
                                     </form>
                                 @elseif($user->status === \App\Enums\UserStatus::Suspended)
                                     <form method="POST" action="{{ route('super-admin.users.activer', $user->id) }}">
                                         @csrf
                                         <button type="submit" class="text-xs text-emerald-600 hover:underline">Activer</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('super-admin.users.archiver', $user->id) }}">
-                                        @csrf
-                                        <button type="submit" class="text-xs text-gray-600 hover:underline">Archiver</button>
                                     </form>
                                 @endif
                             </div>

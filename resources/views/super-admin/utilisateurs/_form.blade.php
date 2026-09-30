@@ -1,8 +1,15 @@
 <div>
-    <label class="mb-1 block text-sm font-medium text-gray-700">Nom</label>
-    <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required
+    <label class="mb-1 block text-sm font-medium text-gray-700">Prénom</label>
+    <input type="text" name="first_name" value="{{ old('first_name', $user->first_name ?? '') }}" required
            class="w-full rounded-xl border border-soft-gray px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
-    @error('name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+    @error('first_name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+</div>
+
+<div>
+    <label class="mb-1 block text-sm font-medium text-gray-700">Nom</label>
+    <input type="text" name="last_name" value="{{ old('last_name', $user->last_name ?? '') }}" required
+           class="w-full rounded-xl border border-soft-gray px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+    @error('last_name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
 </div>
 
 <div>

@@ -151,7 +151,7 @@
                             </p>
 
                             <img
-                                src="{{ Storage::url($profile->farm_photo) }}"
+                                src="{{ $profile->farm_photo }}"
                                 alt="Photo de l'exploitation"
                                 class="h-64 w-full rounded-2xl object-cover"
                             >
@@ -194,7 +194,7 @@
                             </p>
 
                             <img
-                                src="{{ Storage::url($profile->business_photo) }}"
+                                src="{{ $profile->business_photo }}"
                                 alt="Photo de l'entreprise"
                                 class="h-64 w-full rounded-2xl object-cover"
                             >

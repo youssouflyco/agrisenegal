@@ -46,18 +46,12 @@
                                 @if($user->status === \App\Enums\UserStatus::Active)
                                     <form method="POST" action="{{ route('super-admin.users.bloquer', $user->id) }}">
                                         @csrf
-                                        <button type="submit" class="text-xs text-orange-600 hover:underline">Bloquer</button>
+                                        <button type="submit" class="text-xs text-orange-600 hover:underline">Suspendre</button>
                                     </form>
                                 @elseif($user->status === \App\Enums\UserStatus::Suspended)
                                     <form method="POST" action="{{ route('super-admin.users.activer', $user->id) }}">
                                         @csrf
                                         <button type="submit" class="text-xs text-emerald-600 hover:underline">Activer</button>
-                                    </form>
-                                @endif
-                                @if($user->status !== \App\Enums\UserStatus::Archived)
-                                    <form method="POST" action="{{ route('super-admin.users.archiver', $user->id) }}">
-                                        @csrf
-                                        <button type="submit" class="text-xs text-gray-600 hover:underline">Archiver</button>
                                     </form>
                                 @endif
                             </div>
