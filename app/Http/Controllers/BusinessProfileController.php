@@ -35,7 +35,7 @@ class BusinessProfileController extends Controller
     }
 
     /**
-     * Submit or update a business profile.
+     * Submit a business profile.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -107,7 +107,7 @@ DB::transaction(function () use ($request, $validated, $user) {
 
 
             $validated['user_id'] = $user->id;
-            $validated['verification_status'] = 'PENDING';
+            $validated['status'] = 'PENDING';
             $validated['rejection_reason'] = null;
             $validated['approved_at'] = null;
 
@@ -179,7 +179,7 @@ DB::transaction(function () use ($request, $validated, $user) {
     ): RedirectResponse {
         $businessProfile = BusinessProfile::findOrFail($id);
 
-        if ($businessProfile->verification_status !== 'PENDING') {
+        if ($businessProfile->status !== 'PENDING') {
             return back()->with(
                 'error',
                 'Cette demande a déjà été traitée.'
@@ -187,13 +187,13 @@ DB::transaction(function () use ($request, $validated, $user) {
         }
 
         $businessProfile->update([
-            'verification_status' => 'APPROVED',
+            'status' => 'APPROVED',
             'approved_at' => now(),
             'rejection_reason' => null,
         ]);
 
         return redirect()
-            ->route('admin.business-profiles.review', $businessProfile->id)
+            ->route('super-admin.business-profiles.review', $businessProfile->id)
             ->with(
                 'success',
                 'Le profil a été approuvé avec succès.'
@@ -217,7 +217,7 @@ DB::transaction(function () use ($request, $validated, $user) {
 
         $businessProfile = BusinessProfile::findOrFail($id);
 
-        if ($businessProfile->verification_status !== 'PENDING') {
+        if ($businessProfile->status !== 'PENDING') {
             return back()->with(
                 'error',
                 'Cette demande a déjà été traitée.'
@@ -225,16 +225,75 @@ DB::transaction(function () use ($request, $validated, $user) {
         }
 
         $businessProfile->update([
-            'verification_status' => 'REJECTED',
+            'status' => 'REJECTED',
             'rejection_reason' => $validated['rejection_reason'],
             'approved_at' => null,
         ]);
 
         return redirect()
-            ->route('admin.business-profiles.review', $businessProfile->id)
+            ->route('super-admin.business-profiles.review', $businessProfile->id)
             ->with(
                 'success',
                 'Le profil a été rejeté.'
             );
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+    $profile = $request->user()->businessProfile;
+
+    abort_unless($profile->status === 'REJECTED', 403);
+
+    $validated = $request->validate([
+        'cni' => ['nullable', 'string', 'max:50'],
+        'cni_front_photo' => ['nullable', 'image', 'max:5120'],
+        'cni_back_photo' => ['nullable', 'image', 'max:5120'],
+        'farm_name' => ['nullable', 'string', 'max:255'],
+        'production_type' => ['nullable', 'string', 'max:255'],
+        'farm_photo' => ['nullable', 'image', 'max:5120'],
+        'business_name' => ['nullable', 'string', 'max:255'],
+        'business_type' => ['nullable', 'string', 'max:255'],
+        'business_photo' => ['nullable', 'image', 'max:5120'],
+    ]);
+
+    $files = [
+        'cni_front_photo',
+        'cni_back_photo',
+        'farm_photo',
+        'business_photo',
+    ];
+
+            foreach ($files as $file) {
+                if ($request->hasFile($file)) {
+                    if ($profile?->{$file}) {
+                        Storage::disk('public')->delete(
+                            $profile->{$file}
+                        );
+                    }
+
+                    $validated[$file] = $this->fileUploader->uploadFile(
+                        $request->file($file)
+                    );
+
+                }
+        }
+
+    $profile->update([
+        'cni' => $validated['cni'] ?? $profile->cni,
+        'farm_name' => $validated['farm_name'] ?? $profile->farm_name,
+        'production_type' => $validated['production_type'] ?? $profile->production_type,
+        'business_name' => $validated['business_name'] ?? $profile->business_name,
+        'business_type' => $validated['business_type'] ?? $profile->business_type,
+        'status' => 'PENDING',
+        'rejection_reason' => null,
+        'cni_front_photo' => $validated['cni_front_photo'] ?? $profile->cni_front_photo,
+        'cni_back_photo' => $validated['cni_back_photo'] ?? $profile->cni_back_photo,
+        'farm_photo' => $validated['farm_photo'] ?? $profile->farm_photo,
+        'business_photo' => $validated['business_photo'] ?? $profile->business_photo,
+    ]);
+
+      return redirect()
+        ->route('business-profile.show')
+        ->with('success', 'Votre profil a été modifié et soumis à nouveau pour vérification.');
     }
 }

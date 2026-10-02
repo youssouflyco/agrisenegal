@@ -15,7 +15,7 @@ class ProductCatalogController extends Controller
         $layout = request()->routeIs('super-admin.*') ? 'layouts.super-admin' : 'layouts.app';
 
         $products = Product::query()
-            ->with(['user', 'photos'])
+            ->with(['user'])
             ->where('is_active', true)
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($nested) use ($search) {
@@ -47,7 +47,7 @@ class ProductCatalogController extends Controller
             abort(404);
         }
 
-        $product->load(['user', 'photos']);
+        $product->load(['user']);
 
         return view('products.show', [
             'product' => $product,

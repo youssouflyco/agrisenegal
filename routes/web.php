@@ -145,6 +145,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/business-profile',[BusinessProfileController::class, 'show'])->name('business-profile.show');
     Route::get('/business-profile/create',[BusinessProfileController::class, 'create'])->name('business-profile.create');
     Route::post('/business-profile',[BusinessProfileController::class, 'store'])->name('business-profile.store');
+    Route::patch('/business-profile',[BusinessProfileController::class, 'update'])->name('business-profile.update');
+
 
 Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

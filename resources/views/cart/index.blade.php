@@ -16,7 +16,7 @@
                 <div class="rounded-3xl border border-soft-gray bg-white p-5 shadow-sm">
                     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div class="flex items-center gap-4">
-                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-20 w-20 rounded-2xl object-cover">
+                            <img src="{{ $product->image_path }}" alt="{{ $product->name }}" class="h-20 w-20 rounded-2xl object-cover">
                             <div>
                                 <a href="{{ route('catalog.products.show', $product) }}" class="text-lg font-bold text-gray-900 hover:text-agri-primary">{{ $product->name }}</a>
                                 <p class="text-sm text-gray-500">{{ $product->user?->full_name ?? 'Vendeur' }} · {{ $product->location?->region ?? 'Région inconnue' }}</p>
@@ -60,7 +60,7 @@
                     <p class="mt-2 text-sm text-gray-600">Votre panier est conservé pendant la connexion ou l'inscription.</p>
                     <div class="mt-4 flex flex-col gap-3">
                         <a href="{{ route('login') }}" class="rounded-xl bg-agri-primary px-4 py-3 text-center font-semibold text-white">Connexion</a>
-                        <a href="{{ route('register') }}" class="rounded-xl border border-soft-gray px-4 py-3 text-center font-semibold text-gray-700">Créer un compte</a>
+                        <a href="{{ url('/register') }}" class="rounded-xl border border-soft-gray px-4 py-3 text-center font-semibold text-gray-700">Créer un compte</a>
                     </div>
                 </div>
             @endguest

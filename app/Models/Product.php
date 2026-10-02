@@ -42,11 +42,6 @@ class Product extends Model
         return $this->belongsTo(UserLocation::class, 'user_location_id');
     }
 
-    public function photos(): HasMany
-    {
-        return $this->hasMany(ProductPhoto::class)->orderBy('sort_order')->orderBy('id');
-    }
-
     public function getImageUrlAttribute(): string
     {
         return $this->image_path

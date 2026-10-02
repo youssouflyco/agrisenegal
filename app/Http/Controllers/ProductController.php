@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductPhoto;
 use Illuminate\Http\RedirectResponse;
+use App\Services\FileUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+    public function __construct(private FileUploader $fileUploader) {}
+
     public function index(Request $request): View
     {
         $user = $request->user();
@@ -22,6 +24,10 @@ class ProductController extends Controller
 
     public function create(Request $request): View
     {
+        if (!auth()->user()->hasApprovedBusinessProfile()) {
+          abort(403, 'Votre profil professionnel doit être approuvé pour effectuer cette action.');
+        }
+
         return view('products.create', [
             'product' => new Product(['is_active' => true]),
             'action' => route('products.store'),
@@ -41,15 +47,16 @@ class ProductController extends Controller
             'unit' => ['required', 'in:kg,tonne'],
             'price' => ['required', 'numeric', 'min:0'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'images' => ['required', 'array', 'min:1'],
-            'images.*' => ['image', 'max:4096'],
+            'image' => ['required', 'image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $uploadedImages = [];
+        $imagePath = null;
 
-        foreach ($request->file('images') as $uploadedImage) {
-            $uploadedImages[] = $uploadedImage->store('products', 'public');
+        if ($request->hasFile('image')) {
+            $imagePath = $this->fileUploader->uploadFile(
+                $request->file('image')
+            );
         }
 
         $product = Product::create([
@@ -59,23 +66,19 @@ class ProductController extends Controller
             'unit' => $data['unit'],
             'price' => $data['price'],
             'quantity' => $data['quantity'],
-            'image_path' => $uploadedImages[0],
+            'image_path' => $imagePath,
             'is_active' => $request->boolean('is_active', true),
         ]);
-
-        foreach ($uploadedImages as $index => $uploadedImagePath) {
-            ProductPhoto::create([
-                'product_id' => $product->id,
-                'path' => $uploadedImagePath,
-                'sort_order' => $index,
-            ]);
-        }
 
         return redirect()->route('products.index')->with('success', 'Produit créé avec succès.');
     }
 
     public function edit(Request $request, Product $product): View
     {
+         if (!auth()->user()->hasApprovedBusinessProfile()) {
+          abort(403, 'Votre profil professionnel doit être approuvé pour effectuer cette action.');
+        }
+
         $this->authorizeProduct($request->user(), $product);
 
         return view('products.edit', [
@@ -89,6 +92,10 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
+        if (!auth()->user()->hasApprovedBusinessProfile()) {
+          abort(403, 'Votre profil professionnel doit être approuvé pour effectuer cette action.');
+        }
+
         $this->authorizeProduct($request->user(), $product);
 
         $data = $request->validate([
@@ -97,31 +104,16 @@ class ProductController extends Controller
             'unit' => ['required', 'in:kg,tonne'],
             'price' => ['required', 'numeric', 'min:0'],
             'quantity' => ['required', 'integer', 'min:0'],
-            'images' => ['nullable', 'array', 'min:1'],
-            'images.*' => ['image', 'max:4096'],
+            'image' => ['required', 'image', 'max:4096'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $imagePath = $product->image_path;
+        $imagePath = null;
 
-        if ($request->hasFile('images')) {
-            $uploadedImages = [];
-
-            foreach ($request->file('images') as $uploadedImage) {
-                $uploadedImages[] = $uploadedImage->store('products', 'public');
-            }
-
-            if (! $imagePath && count($uploadedImages) > 0) {
-                $imagePath = $uploadedImages[0];
-            }
-
-            foreach ($uploadedImages as $index => $uploadedImagePath) {
-                ProductPhoto::create([
-                    'product_id' => $product->id,
-                    'path' => $uploadedImagePath,
-                    'sort_order' => $product->photos()->count() + $index,
-                ]);
-            }
+        if ($request->hasFile('image')) {
+          $imagePath = $this->fileUploader->uploadFile(
+                $request->file('image')
+            );
         }
 
         $product->update([

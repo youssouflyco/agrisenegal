@@ -359,45 +359,42 @@
         </h2>
 
         <p class="mb-6 text-sm text-gray-600">
-            Vérifiez attentivement les informations et les documents avant de prendre une décision.
+            Vous pouvez approuver le profil ou le rejeter avec un motif.
         </p>
-
-        <div class="grid gap-4 md:grid-cols-2">
-
+        <div class="border-t border-gray-200 pt-6">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             {{-- Approve --}}
             <form
                 method="POST"
                 action="{{ route('super-admin.business-profiles.approve', $profile->id) }}"
             >
                 @csrf
-
-                <button
-                    type="submit"
-                    class="w-full rounded-xl bg-green-600 px-5 py-3.5 font-medium text-white transition hover:bg-green-700"
-                    onclick="return confirm('Êtes-vous sûr de vouloir approuver ce profil ?')"
-                >
-                    Approuver le profil
-                </button>
-            </form>
-
-            {{-- Reject --}}
-            <div>
-                <button
+                    <button
+                        type="submit"
+                        class="btn-primary rounded-xl py-3.5 font-medium py-3.5 font-medium text-black"
+                        onclick="return confirm('Êtes-vous sûr de vouloir approuver ce profil ?')"
+                    >
+                        Approver
+                    </button>
+                         <button
                     type="button"
                     onclick="document.getElementById('rejection-form').classList.toggle('hidden')"
-                    class="w-full rounded-xl bg-red-600 px-5 py-3.5 font-medium text-white transition hover:bg-red-700"
+                    class="btn-warning rounded-xl py-3.5 font-medium py-3.5 font-medium text-black"
                 >
-                    Rejeter le profil
-                </button>
-            </div>
-
+                    Rejeter
+            </button>
+            </form>
+            {{-- Reject --}}
+          </div>
         </div>
 
         {{-- Rejection form --}}
         <div
             id="rejection-form"
-            class="mt-6 hidden rounded-2xl border border-red-200 bg-red-50 p-5"
+            class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5
+                {{ $errors->has('rejection_reason') ? '' : 'hidden' }}"
         >
+
             <form
                 method="POST"
                 action="{{ route('super-admin.business-profiles.reject', $profile->id) }}"
@@ -418,7 +415,7 @@
                     required
                     placeholder="Expliquez clairement les informations ou documents à corriger..."
                     class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                >{{ old('rejection_reason') }}</textarea>
+                >{{ old('rejection_reason', $profile->rejection_reason) }}</textarea>
 
                 @error('rejection_reason')
                     <p class="mt-1 text-sm text-red-600">
@@ -429,19 +426,21 @@
                 <div class="mt-4 flex justify-end">
                     <button
                         type="submit"
-                        class="rounded-xl bg-red-600 px-5 py-3 font-medium text-white transition hover:bg-red-700"
+                        class="rounded-xl bg-red-600 px-5 py-3 font-medium text-black transition hover:bg-red-700"
                     >
                         Confirmer le rejet
                     </button>
                 </div>
+
             </form>
+
         </div>
 
     </div>
 
 @elseif($profile->status === 'APPROVED')
 
-    <div class="rounded-2xl border border-green-200 bg-green-50 p-5">
+    <div class="rounded-2xl border border-gray-200 bg-white p-5">
         <p class="font-medium text-green-800">
             Ce profil a été approuvé.
         </p>
@@ -449,20 +448,6 @@
         <p class="mt-1 text-sm text-green-700">
             Aucune action supplémentaire n'est requise.
         </p>
-    </div>
-
-@elseif($profile->status === 'REJECTED')
-
-    <div class="rounded-2xl border border-red-200 bg-red-50 p-5">
-        <p class="font-medium text-red-800">
-            Ce profil a été rejeté.
-        </p>
-
-        @if($profile->rejection_reason)
-            <p class="mt-1 text-sm text-red-700">
-                Le motif du rejet est affiché ci-dessus.
-            </p>
-        @endif
     </div>
 
 @endif

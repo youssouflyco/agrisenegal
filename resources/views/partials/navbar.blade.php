@@ -32,7 +32,7 @@
                 <a href="{{ route('locations.index') }}" class="text-sm font-medium hover:text-agri-primary">Mes adresses</a>
                 <a href="{{ route('claims.index') }}" class="text-sm font-medium hover:text-agri-primary">Réclamations</a>
             @else
-                <a href="#producteurs" @click="open = false" class="py-2">Produits</a>
+                <a href="{{ route('catalog.products') }}" @click="open = false" class="py-2">Produits</a>
                 <a href="#producteurs" @click="open = false" class="py-2">Producteurs</a>
                 <a href="#distributeurs" @click="open = false" class="py-2">Distributeurs</a>
             @endif

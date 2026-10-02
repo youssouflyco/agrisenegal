@@ -22,7 +22,7 @@
                 </div>
                 <div class="sm:col-span-2">
                     <label class="mb-1 block text-sm font-medium">Photos du produit *</label>
-                    <input type="file" name="images[]" accept="image/*" multiple {{ empty($product?->image_path) ? 'required' : '' }} class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
+                    <input type="file" name="image" accept="image/*" multiple {{ empty($product?->image_path) ? 'required' : '' }} class="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-agri-primary focus:ring-2 focus:ring-agri-light/30">
                     <p class="mt-2 text-xs text-gray-500">Vous pouvez envoyer une ou plusieurs photos. La première servira de photo principale.</p>
                 </div>
                 <div>

@@ -68,6 +68,34 @@
         @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-agri-primary px-6 py-3 font-semibold text-agri-primary transition hover:bg-agri-primary hover:text-white;
     }
 
+    .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-agri-primary px-6 py-3 font-semibold text-white transition hover:bg-agri-primary/90 focus:ring-4 focus:ring-agri-light/40;
+}
+
+.btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-agri-primary px-6 py-3 font-semibold text-agri-primary transition hover:bg-agri-primary hover:text-white;
+}
+
+.btn-success {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700 focus:ring-4 focus:ring-green-200;
+}
+
+.btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700 focus:ring-4 focus:ring-red-200;
+}
+
+.btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-gray-300 px-6 py-3 font-semibold text-gray-700 transition hover:border-gray-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-200;
+}
+
+.btn-warning {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-6 py-3 font-semibold text-white transition hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-200;
+}
+
+.btn-sm {
+    @apply px-4 py-2 text-sm;
+}
+
     .section-title {
         @apply text-3xl font-bold text-agri-primary md:text-4xl;
     }
