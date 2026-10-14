@@ -47,7 +47,6 @@ class AdminController extends Controller
             : null;
 
         $admin = User::create([
-            'name' => "{$data['first_name']} {$data['last_name']}",
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
@@ -106,7 +105,6 @@ class AdminController extends Controller
         }
 
         $admin->update([
-            'name' => "{$data['first_name']} {$data['last_name']}",
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
