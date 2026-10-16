@@ -36,4 +36,32 @@ class WithdrawalRequestController extends Controller
 
         return back()->with('success', 'Votre demande de retrait a été envoyée.');
     }
+
+    public function update(Request $request, WithdrawalRequest $withdrawalRequest): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:pending,approved,rejected'],
+            'response_note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $withdrawalRequest->update([
+            'status' => $data['status'],
+            'response_note' => $data['response_note'] ?? null,
+            'processed_by' => $request->user()->id,
+            'processed_at' => $data['status'] === 'pending' ? null : now(),
+        ]);
+
+        return back()->with('success', 'Demande de retrait mise à jour.');
+    }
+
+    public function show(string $id): View
+    {
+        $withdrawal = WithdrawalRequest::findOrFail($id);
+
+        return view('withdrawals.show', [
+            'layout' => 'layouts.super-admin',
+            'mode' => 'admin',
+            'withdrawal' => $withdrawal->load('user'),
+        ]);
+    }
 }

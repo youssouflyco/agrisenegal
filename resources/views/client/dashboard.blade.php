@@ -19,8 +19,8 @@
 
 <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @foreach([
-        ['icon' => '🥬', 'title' => 'Catalogue produits', 'desc' => 'Parcourez les produits agricoles disponibles.', 'href' => route('catalog.products')],
-        ['icon' => '📦', 'title' => 'Mes réclamations', 'desc' => 'Déposez et suivez vos réclamations.', 'href' => route('claims.index')],
+        ['icon' => '📦', 'title' => 'Mes commandes', 'desc' => 'Suivez l\'état de vos commandes.', 'href' => route('claims.index')],
+        ['icon' => '💬', 'title' => 'Mes réclamations', 'desc' => 'Déposez et suivez vos réclamations.', 'href' => route('claims.index')],
         ['icon' => '🗺️', 'title' => 'Carte agricole', 'desc' => 'Repérez producteurs et distributeurs proches.', 'href' => route('agri.map')],
     ] as $card)
         <a href="{{ $card['href'] }}" class="kpi-card block transition hover:-translate-y-1 hover:shadow-lg" data-reveal>

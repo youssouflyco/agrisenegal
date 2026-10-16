@@ -65,7 +65,7 @@
                 </div>
             @endguest
 
-            <a href="{{ route('cart.checkout') }}" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-harvest px-4 py-3 font-bold text-agri-primary">Commander</a>
+            <a href="{{ route('client.orders.checkout') }}" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-harvest px-4 py-3 font-bold text-agri-primary">Commander</a>
         </aside>
     </div>
 </div>

@@ -61,4 +61,9 @@ class Product extends Model
 
         return array_values(array_unique($photoUrls));
     }
+
+    public function orderItems(): HasMany
+    {
+      return $this->hasMany(OrderItem::class);
+    }
 }

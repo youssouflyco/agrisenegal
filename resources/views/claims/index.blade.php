@@ -1,3 +1,9 @@
+@php
+    $layout = auth()->user()->role->value === 'super_admin'
+        ? 'layouts.super-admin'
+        : 'layouts.app';
+@endphp
+
 @extends($layout)
 
 @section('title', 'Réclamations')
@@ -48,6 +54,22 @@
     </div>
 </div>
 
+   @php
+        $statusClasses = [
+            'open' => 'bg-yellow-100 text-yellow-800',
+            'in_progress' => 'bg-blue-100 text-blue-800',
+            'resolved' => 'bg-green-100 text-green-800',
+            'rejected' => 'bg-red-100 text-red-800',
+        ];
+
+        $statusLabels = [
+            'open' => 'Ouverte',
+            'in_progress' => 'En cours',
+            'resolved' => 'Résolue',
+            'rejected' => 'Rejetée',
+        ];
+    @endphp
+
 <div class="mt-8 rounded-2xl bg-white p-6 shadow-md">
     <div class="mb-5 flex items-center justify-between gap-4">
         <h3 class="text-lg font-semibold text-agri-primary">Historique</h3>
@@ -61,7 +83,7 @@
                         <h4 class="font-semibold text-gray-900">{{ $complaint->subject }}</h4>
                         <p class="mt-1 text-sm text-gray-600">{{ $complaint->message }}</p>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-medium text-gray-700 bg-soft-gray">{{ ucfirst(str_replace('_', ' ', $complaint->status)) }}</span>
+                    <span class="rounded-full px-3 py-1 text-xs font-medium text-gray-700 bg-soft-gray">{{ $statusLabels[$complaint->status] ?? ucfirst(str_replace('_', ' ', $complaint->status)) }}</span>
                 </div>
                 <div class="mt-3 text-xs text-gray-500">
                     <p>Produit : {{ $complaint->product?->name ?? 'Réclamation générale' }}</p>
@@ -107,18 +129,61 @@
                             @endif
                         </td>
                         <td class="px-4 py-3">{{ ucfirst(str_replace('_', ' ', $complaint->status)) }}</td>
-                        <td class="px-4 py-3">
-                            <form method="POST" action="{{ route('super-admin.claims.update', $complaint) }}" class="space-y-2">
-                                @csrf
-                                <select name="status" class="w-full rounded-xl border border-soft-gray px-3 py-2 text-sm">
-                                    <option value="open" @selected($complaint->status === 'open')>Ouverte</option>
-                                    <option value="in_progress" @selected($complaint->status === 'in_progress')>En cours</option>
-                                    <option value="resolved" @selected($complaint->status === 'resolved')>Résolue</option>
-                                </select>
-                                <textarea name="resolution_note" rows="3" class="w-full rounded-xl border border-soft-gray px-3 py-2 text-sm" placeholder="Note de traitement ou réponse client">{{ $complaint->resolution_note }}</textarea>
-                                <button type="submit" class="btn-primary text-sm">Mettre à jour</button>
-                            </form>
-                        </td>
+<td class="px-4 py-3">
+    @php
+       $isAdmin = in_array(
+            auth()->user()->role->value,
+            ['admin', 'super_admin']
+        );
+
+        $statusClasses = [
+            'open' => 'bg-yellow-100 text-yellow-800',
+            'in_progress' => 'bg-blue-100 text-blue-800',
+            'resolved' => 'bg-green-100 text-green-800',
+            'rejected' => 'bg-red-100 text-red-800',
+        ];
+
+        $statusLabels = [
+            'open' => 'Ouverte',
+            'in_progress' => 'En cours',
+            'resolved' => 'Résolue',
+            'rejected' => 'Rejetée',
+        ];
+
+    @endphp
+
+    <div class="flex items-center gap-2">
+        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses[$complaint->status] ?? 'bg-gray-100 text-gray-700' }}">
+            {{ $statusLabels[$complaint->status] ?? ucfirst(str_replace('_', ' ', $complaint->status)) }}
+        </span>
+
+        @if($isAdmin)
+            <a
+                href="{{ route('admin.claims.show', $complaint) }}"
+                title="Voir les détails"
+                aria-label="Voir les détails de la réclamation"
+                class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-600 transition hover:bg-agri-light/30 hover:text-agri-primary"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+            </a>
+        @endif
+    </div>
+</td>
                     </tr>
                 @empty
                     <tr>

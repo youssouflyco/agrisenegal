@@ -168,4 +168,14 @@ class User extends Authenticatable
     {
      return $this->businessProfile?->status === 'APPROVED';
     }
+
+    public function orders(): HasMany
+    {
+     return $this->hasMany(Order::class);
+    }
+
+    public function orderItemsSold(): HasMany
+    {
+     return $this->hasMany(OrderItem::class, 'seller_user_id');
+    }
 }

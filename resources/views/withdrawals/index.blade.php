@@ -1,9 +1,10 @@
-@extends($layout)
+@php
+    $layout = auth()->user()->role->value === 'super_admin'
+        ? 'layouts.super-admin'
+        : 'layouts.app';
+@endphp
 
-@section('title', 'Retraits')
-@if($mode === 'admin')
-@section('page-title', 'Gestion des retraits')
-@endif
+@extends($layout)
 
 @section('content')
 @if($mode === 'user')
@@ -104,18 +105,30 @@
                         <td class="px-4 py-3">{{ number_format($requestItem->amount, 0, ',', ' ') }} FCFA</td>
                         <td class="px-4 py-3">{{ ucfirst(str_replace('_', ' ', $requestItem->method)) }}</td>
                         <td class="px-4 py-3">{{ ucfirst($requestItem->status) }}</td>
-                        <td class="px-4 py-3">
-                            <form method="POST" action="{{ route('super-admin.withdrawals.update', $requestItem) }}" class="space-y-2">
-                                @csrf
-                                <select name="status" class="w-full rounded-xl border border-soft-gray px-3 py-2 text-sm">
-                                    <option value="pending" @selected($requestItem->status === 'pending')>En attente</option>
-                                    <option value="approved" @selected($requestItem->status === 'approved')>Approuvé</option>
-                                    <option value="rejected" @selected($requestItem->status === 'rejected')>Rejeté</option>
-                                </select>
-                                <textarea name="response_note" rows="3" class="w-full rounded-xl border border-soft-gray px-3 py-2 text-sm" placeholder="Note de traitement">{{ $requestItem->response_note }}</textarea>
-                                <button type="submit" class="btn-primary text-sm">Mettre à jour</button>
-                            </form>
-                        </td>
+                 <td class="px-4 py-3">
+    <a
+        href="{{ route('withdrawals.show', $requestItem->id) }}"
+        title="Voir les détails"
+        aria-label="Voir les détails du retrait"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition hover:bg-agri-light/30 hover:text-agri-primary"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z"
+            />
+            <circle cx="12" cy="12" r="3" />
+        </svg>
+    </a>
+</td>
                     </tr>
                 @empty
                     <tr><td colspan="5" class="px-4 py-12 text-center text-gray-500">Aucune demande de retrait.</td></tr>

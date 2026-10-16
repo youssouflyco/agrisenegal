@@ -17,4 +17,11 @@ class UserRoleConstants
         'producteur' => UserRole::Producer,
         'distributeur' => UserRole::Distributor,
     ];
+
+     // Allowed admin roles
+    public const ADMIN_ROLES = [
+        'admin' => UserRole::Admin,
+        'super_admin' => UserRole::SuperAdmin,
+    ];
+
 }

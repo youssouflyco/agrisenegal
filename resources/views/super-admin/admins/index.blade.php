@@ -10,22 +10,11 @@
 </div>
 
 <div class="rounded-2xl bg-white p-6 shadow-md">
-    <x-data-table-toolbar export-route="super-admin.admins.export" search-placeholder="Nom, email, téléphone...">
-        <x-slot:filters>
-            <select name="status" class="rounded-xl border border-soft-gray px-3 py-2.5 text-sm">
-                <option value="">Tous les statuts</option>
-                @foreach(\App\Enums\UserStatus::cases() as $status)
-                    <option value="{{ $status->value }}" @selected(request('status') === $status->value)>{{ $status->label() }}</option>
-                @endforeach
-            </select>
-        </x-slot:filters>
-    </x-data-table-toolbar>
-
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
             <thead class="border-b border-soft-gray bg-soft-gray/50">
                 <tr>
-                    @foreach(['Photo' => '', 'Prénom' => 'first_name', 'Nom' => 'last_name', 'Email' => 'email', 'Téléphone' => '', 'Statut' => 'status', 'Créé le' => 'created_at', 'Actions' => ''] as $label => $sort)
+                    @foreach(['Prénom' => 'first_name', 'Nom' => 'last_name', 'Email' => 'email', 'Téléphone' => '', 'Statut' => 'status', 'Créé le' => 'created_at', 'Actions' => ''] as $label => $sort)
                         <th class="px-4 py-3 font-semibold text-gray-700">
                             @if($sort)
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => $sort, 'dir' => request('dir') === 'asc' ? 'desc' : 'asc']) }}" class="hover:text-agri-primary">
@@ -41,9 +30,6 @@
             <tbody class="divide-y divide-soft-gray">
                 @forelse($admins as $admin)
                     <tr class="hover:bg-soft-gray/30">
-                        <td class="px-4 py-3">
-                            <img src="{{ $admin->photo_url }}" alt="" class="h-10 w-10 rounded-full object-cover">
-                        </td>
                         <td class="px-4 py-3 font-medium">{{ $admin->first_name }}</td>
                         <td class="px-4 py-3">{{ $admin->last_name }}</td>
                         <td class="px-4 py-3">{{ $admin->email }}</td>

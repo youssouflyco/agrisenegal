@@ -26,6 +26,7 @@ use App\Http\Controllers\SuperAdmin\OrderController as SuperAdminOrderController
 use App\Http\Controllers\SuperAdmin\WithdrawalController as SuperAdminWithdrawalController;
 use App\Http\Controllers\SuperAdmin\PlaceholderController;
 use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,7 +57,7 @@ Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
 Route::post('/panier/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::put('/panier/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/panier/{product}', [CartController::class, 'remove'])->name('cart.remove');
-Route::get('/panier/commander', [CartController::class, 'checkout'])->name('cart.checkout');
+// Route::get('/panier/commander', [CartController::class, 'checkout'])->name('cart.checkout');
 
 Route::get('/password/reset/{token}', function (string $token) {
     return redirect()->route('password.reset', ['token' => $token]);
@@ -106,10 +107,19 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->group(function () {
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+
+    // Orders
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/pay', [OrderController::class, 'pay'])->name('orders.pay');
+
 });
 
 Route::middleware(['auth', 'role:producer'])->prefix('producteur')->name('producer.')->group(function () {
     Route::get('/dashboard', [ProducerDashboardController::class, 'index'])->name('dashboard');
+
 });
 
 Route::middleware(['auth', 'role:producer,distributor'])->prefix('mes-produits')->name('products.')->group(function () {
@@ -119,18 +129,33 @@ Route::middleware(['auth', 'role:producer,distributor'])->prefix('mes-produits')
     Route::get('/{product}/modifier', [ProductController::class, 'edit'])->name('edit');
     Route::put('/{product}', [ProductController::class, 'update'])->name('update');
     Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
+
 });
 
-Route::middleware(['auth', 'role:client'])->prefix('mes-reclamations')->name('claims.')->group(function () {
+Route::middleware(['auth', 'role:producer,distributor,admin,super_admin'])->prefix('orders')->name('sales.')->group(function () {
+    // Orders
+    Route::get('/', [OrderController::class, 'getCustomerOrders'])->name('orders.index');
+    Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::put('/{order}/status', [OrderController::class, 'updatePaymentStatus'])->name('orders.update');
+});
+
+Route::middleware(['auth', 'role:client,producer,distributor'])->prefix('mes-reclamations')->name('claims.')->group(function () {
     Route::get('/', [ComplaintController::class, 'index'])->name('index');
     Route::post('/', [ComplaintController::class, 'store'])->name('store');
 });
 
-Route::middleware(['auth', 'role:admin'])->get('/reclamations', [ComplaintController::class, 'index'])->name('admin.claims');
+Route::middleware(['auth', 'role:admin,super_admin'])->get('/reclamations', [ComplaintController::class, 'index'])->name('admin.claims');
+Route::middleware(['auth', 'role:admin,super_admin'])->get('/reclamations/{complaint}', [ComplaintController::class, 'show'])->name('admin.claims.show');
+Route::middleware(['auth', 'role:admin,super_admin'])->patch('/reclamations/{complaint}', [ComplaintController::class, 'resolve'])->name('admin.claims.resolve');
 
-Route::middleware(['auth', 'role:producer,distributor,admin'])->prefix('mes-retraits')->name('withdrawals.')->group(function () {
+
+
+Route::middleware(['auth', 'role:producer,distributor,admin,super_admin'])->prefix('mes-retraits')->name('withdrawals.')->group(function () {
     Route::get('/', [WithdrawalRequestController::class, 'index'])->name('index');
+    Route::get('/{withdrawal}', [WithdrawalRequestController::class, 'show'])->name('show');
     Route::post('/', [WithdrawalRequestController::class, 'store'])->name('store');
+    Route::patch('/{withdrawal}', [WithdrawalRequestController::class, 'update'])->name('update');
+
 });
 
 Route::middleware(['auth', 'role:distributor'])->prefix('distributeur')->name('distributor.')->group(function () {
@@ -148,6 +173,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/business-profile',[BusinessProfileController::class, 'update'])->name('business-profile.update');
 
 
+
 Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -157,10 +183,11 @@ Route::prefix('super-admin')->name('super-admin.')->middleware(['auth', 'super_a
     Route::post('/business-profiles/{id}/approve',[BusinessProfileController::class, 'approve'])->name('business-profiles.approve');
     Route::post('/business-profiles/{id}/reject',[BusinessProfileController::class, 'reject'])->name('business-profiles.reject');
 
+    // Orders
+    Route::get('/commandes', [OrderController::class, 'allOrders'])->name('orders');
 
 
     Route::get('/produits', [ProductCatalogController::class, 'index'])->name('products');
-    Route::get('/commandes', [SuperAdminOrderController::class, 'index'])->name('orders');
     Route::get('/reclamations', [SuperAdminComplaintController::class, 'index'])->name('claims');
     Route::post('/reclamations/{complaint}/statut', [SuperAdminComplaintController::class, 'update'])->name('claims.update');
     Route::get('/retraits', [SuperAdminWithdrawalController::class, 'index'])->name('withdrawals');

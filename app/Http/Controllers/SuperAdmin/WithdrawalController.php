@@ -39,4 +39,15 @@ class WithdrawalController extends Controller
 
         return back()->with('success', 'Demande de retrait mise à jour.');
     }
+
+    public function show(string $id): View
+    {
+        $withdrawal = WithdrawalRequest::findOrFail($id);
+        
+        return view('withdrawals.show', [
+            'layout' => 'layouts.super-admin',
+            'mode' => 'admin',
+            'withdrawal' => $withdrawal->load('user'),
+        ]);
+    }
 }

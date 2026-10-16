@@ -47,23 +47,4 @@ class CartController extends Controller
 
         return back()->with('success', 'Produit retiré du panier.');
     }
-
-    public function checkout(Request $request): RedirectResponse|View
-    {
-        if ($this->cart->count() === 0) {
-            return redirect()->route('cart.index')->withErrors(['cart' => 'Votre panier est vide.']);
-        }
-
-        if (! $request->user()) {
-            session()->put('url.intended', route('cart.index'));
-
-            return redirect()->route('login');
-        }
-
-        return view('cart.checkout', [
-            'items' => $this->cart->all(),
-            'subtotal' => $this->cart->subtotal(),
-            'count' => $this->cart->count(),
-        ]);
-    }
 }

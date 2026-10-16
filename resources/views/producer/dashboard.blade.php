@@ -10,6 +10,7 @@
         <a href="{{ route('agri.map') }}" class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Voir ma position sur la carte</a>
         <a href="{{ route('locations.index') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes champs</a>
         <a href="{{ route('products.index') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes produits</a>
+        <a href="{{ route('sales.orders.index') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes ventes</a>
         <a href="{{ route('withdrawals.index') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes retraits</a>
     </div>
 </div>
@@ -17,7 +18,7 @@
 <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @foreach([
         ['icon' => '📋', 'title' => 'Mes produits', 'desc' => 'Ajoutez et mettez à jour votre catalogue.', 'href' => route('products.index')],
-        ['icon' => '🥬', 'title' => 'Catalogue produits', 'desc' => 'Voir tous les produits publiés.', 'href' => route('catalog.products')],
+        ['icon' => '💬', 'title' => 'Reclamations', 'desc' => 'Ajoutez et gérez vos réclamations.', 'href' => route('claims.index')],
         ['icon' => '🗺️', 'title' => 'Mes localisations', 'desc' => 'Gérez vos champs et dépôts.', 'href' => route('locations.index')],
     ] as $card)
         <a href="{{ $card['href'] }}" class="kpi-card block transition hover:-translate-y-1 hover:shadow-lg">

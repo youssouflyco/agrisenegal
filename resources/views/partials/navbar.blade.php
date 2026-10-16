@@ -27,15 +27,9 @@
                     <span class="absolute -right-3 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-harvest px-1 text-[11px] font-bold text-agri-primary">{{ $cartCount }}</span>
                 @endif
             </a> -->
-            @if($user?->isClient())
-                <a href="{{ route('agri.map') }}" class="text-sm font-medium hover:text-agri-primary">Carte</a>
-                <a href="{{ route('locations.index') }}" class="text-sm font-medium hover:text-agri-primary">Mes adresses</a>
-                <a href="{{ route('claims.index') }}" class="text-sm font-medium hover:text-agri-primary">Réclamations</a>
-            @else
                 <a href="{{ route('catalog.products') }}" @click="open = false" class="py-2">Produits</a>
                 <a href="#producteurs" @click="open = false" class="py-2">Producteurs</a>
                 <a href="#distributeurs" @click="open = false" class="py-2">Distributeurs</a>
-            @endif
             @auth
                 <a href="{{ auth()->user()->homeUrl() }}" class="text-sm font-semibold text-agri-primary hover:underline">Dashboard</a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">

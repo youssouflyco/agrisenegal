@@ -13,25 +13,6 @@
 
 <div class="rounded-2xl bg-white p-6 shadow-md">
 
-<x-data-table-toolbar
-    search-placeholder="Nom, email, téléphone..."
->
-    <x-slot:filters>
-        <select name="status" class="rounded-xl border border-soft-gray px-3 py-2.5 text-sm">
-            <option value="">Tous les statuts</option>
-
-            @foreach(\App\Enums\UserStatus::cases() as $status)
-                <option
-                    value="{{ $status->value }}"
-                    @selected(request('status') === $status->value)
-                >
-                    {{ $status->label() }}
-                </option>
-            @endforeach
-        </select>
-    </x-slot:filters>
-</x-data-table-toolbar>
-
 <div class="overflow-x-auto">
     <table class="w-full text-left text-sm">
 
