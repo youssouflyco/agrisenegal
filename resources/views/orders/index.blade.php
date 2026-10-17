@@ -165,7 +165,7 @@
                             <td class="px-4 py-3">
                                 <a
                                     href="{{ $isClient
-                                        ? route('orders.show', $order->id)
+                                        ? route('client.orders.show', $order->id)
                                         : route('sales.orders.show', $order->id) }}"
                                     title="Voir les détails"
                                     aria-label="Voir les détails de la commande"

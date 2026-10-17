@@ -203,7 +203,7 @@ class OrderController extends Controller
     $this->cart->clear();
 
     return redirect()
-        ->route('orders.show', $order)
+        ->route('client.orders.show', $order)
         ->with('success', 'Your order has been placed successfully.');
 }
 

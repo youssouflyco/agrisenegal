@@ -14,14 +14,15 @@
     <div class="mt-5">
         <a href="{{ route('agri.map') }}" class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Trouver des vendeurs proches</a>
         <a href="{{ route('locations.index') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Mes adresses</a>
+        <a href="{{ route('agri.map') }}" class="ml-2 rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/25">Carte agricole</a>
     </div>
 </div>
 
 <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @foreach([
-        ['icon' => '📦', 'title' => 'Mes commandes', 'desc' => 'Suivez l\'état de vos commandes.', 'href' => route('claims.index')],
+        ['icon' => '📋', 'title' => 'Catalogue produits', 'desc' => 'Parcourez notre sélection de produits.', 'href' => route('catalog.products')],
+        ['icon' => '📦', 'title' => 'Mes commandes', 'desc' => 'Suivez l\'état de vos commandes.', 'href' => route('client.orders.index') ],
         ['icon' => '💬', 'title' => 'Mes réclamations', 'desc' => 'Déposez et suivez vos réclamations.', 'href' => route('claims.index')],
-        ['icon' => '🗺️', 'title' => 'Carte agricole', 'desc' => 'Repérez producteurs et distributeurs proches.', 'href' => route('agri.map')],
     ] as $card)
         <a href="{{ $card['href'] }}" class="kpi-card block transition hover:-translate-y-1 hover:shadow-lg" data-reveal>
             <span class="text-3xl">{{ $card['icon'] }}</span>
