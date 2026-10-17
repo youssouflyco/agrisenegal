@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -340,6 +341,77 @@ class OrderController extends Controller
 
         return $orderNumber;
     }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+      $user = $request->user();
+
+      abort_unless(
+        in_array($user->role->value, ['producer', 'distributor']),
+        403,
+        'Accès non autorisé.'
+      );
+
+      $validated = $request->validate([
+        'status' => [
+            'required',
+            Rule::in(['PROCESSING', 'SHIPPED', 'DELIVERED']),
+        ],
+       ]);
+
+       $nextStatus = $validated['status'];
+
+       DB::transaction(function () use ($order, $user, $nextStatus) {
+         $lockedOrder = Order::query()
+            ->whereKey($order->id)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        // The order must be paid before the seller can process it.
+        abort_unless(
+            $lockedOrder->payment_status === 'PAID',
+            422,
+            'La commande doit être payée avant son traitement.'
+        );
+
+        // Verify that this seller owns at least one item in the order.
+        $ownsItems = $lockedOrder->items()
+            ->where('seller_user_id', $user->id)
+            ->exists();
+
+        abort_unless($ownsItems, 403, 'Cette commande ne vous appartient pas.');
+
+        $allowedTransitions = [
+            'CONFIRMED' => 'PROCESSING',
+            'PROCESSING' => 'SHIPPED',
+            'SHIPPED' => 'DELIVERED',
+        ];
+
+        abort_unless(
+            ($allowedTransitions[$lockedOrder->status] ?? null) === $nextStatus,
+            422,
+            'Cette transition de statut n’est pas autorisée.'
+        );
+
+        $updates = ['status' => $nextStatus];
+
+        if ($nextStatus === 'SHIPPED') {
+            abort_unless(
+                $lockedOrder->delivery_method === 'DELIVERY',
+                422,
+                'L’expédition concerne uniquement les commandes à livrer.'
+            );
+        }
+
+        if ($nextStatus === 'DELIVERED') {
+            $updates['delivered_at'] = now();
+        }
+
+        $lockedOrder->update($updates);
+       });
+
+    return back()->with('success', 'Le statut de la commande a été mis à jour.');
+}
 
 
 }

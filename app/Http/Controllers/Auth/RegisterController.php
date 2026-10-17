@@ -33,6 +33,14 @@ class RegisterController extends Controller
             'role' => ['required', 'in:'.implode(',', array_keys(UserRoleConstants::ALLOWED_ROLES))],
         ]);
 
+        $role = UserRoleConstants::ALLOWED_ROLES[$data['role']];
+
+        $isBusinessRole = in_array(
+         $role,
+         array_values(UserRoleConstants::BUSINESS_PROFILE_ROLES),
+         true
+        );
+
         $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
@@ -47,6 +55,22 @@ class RegisterController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
+
+        if ($isBusinessRole) {
+        $profile = $user->businessProfile;
+
+        if (! $profile) {
+            return redirect()
+                ->route('business-profile.create')
+                ->with('info', 'Veuillez créer votre profil professionnel pour continuer.');
+        }
+
+        if ($profile->status !== 'APPROVED') {
+            return redirect()
+                ->route('business-profile')
+                ->with('info', 'Votre profil professionnel est en attente de validation.');
+        }
+        }
 
         return redirect()->intended($user->homeUrl());
     }

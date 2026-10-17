@@ -154,6 +154,16 @@ class User extends Authenticatable
         return $query->where('status', UserStatus::Active);
     }
 
+     public function isProducer()
+     {
+        return $this->role === UserRole::Producer;
+     }
+
+    public function isDistributor()
+    {
+        return $this->role === UserRole::Distributor;
+    }
+
     public function scopeNotArchived($query)
     {
         return $query->where('status', '!=', UserStatus::Archived);

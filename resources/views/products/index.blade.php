@@ -28,9 +28,8 @@
                                 {{ $product->quantity }} {{ $product->unit }}
                             </span>
                         </div>
-                        <div class="mt-10">
+                        <div class="mt-5">
                             <h3 class="text-xl font-bold text-gray-900">{{ $product->name }}</h3>
-                            <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ $product->description ?? 'Aucune description.' }}</p>
                         </div>
                     </div>
 

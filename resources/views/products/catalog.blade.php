@@ -81,7 +81,7 @@
         {{-- ========================================================= --}}
         {{-- PRODUCTS GRID --}}
         {{-- ========================================================= --}}
-        <div class="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="mt-3 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
 
             @forelse($products as $product)
 
@@ -125,21 +125,15 @@
 
 
                         {{-- Name / Description --}}
-                        <div class="mt-4">
-
+                        <div class="mt-2">
                             <h3 class="text-lg font-bold text-gray-900">
                                 {{ $product->name }}
                             </h3>
-
-                            <p class="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">
-                                {{ $product->description ?? 'Aucune description disponible.' }}
-                            </p>
-
                         </div>
 
 
                         {{-- Seller + Price --}}
-                        <div class="mt-5 flex items-center justify-between gap-4">
+                        <div class="mt-2 flex items-center justify-between gap-4">
 
                             {{-- Seller --}}
                             <div class="flex min-w-0 items-center gap-3">
@@ -184,7 +178,7 @@
 
 
                         {{-- Additional information --}}
-                        <div class="mt-5 rounded-2xl bg-gray-50 px-4 py-3">
+                        <div class="mt-2 rounded-2xl bg-gray-50 px-4 py-3">
 
                             <div class="flex items-start justify-between gap-4 text-sm">
 
@@ -235,15 +229,15 @@
                                     name="quantity"
                                     value="1"
                                 >
-
+                                @if(auth()->check() && auth()->user()->isClient())
                                 <button
                                     type="submit"
                                     class="w-full rounded-xl bg-harvest px-3 py-2.5 text-sm font-semibold text-agri-primary transition hover:brightness-95"
                                 >
                                     Ajouter au panier
                                 </button>
+                                @endif
                             </form>
-
                         </div>
 
 

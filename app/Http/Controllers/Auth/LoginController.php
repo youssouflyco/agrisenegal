@@ -44,7 +44,27 @@ class LoginController extends Controller
         $request->session()->put('login.id', $user->id);
         $request->session()->put('login.remember', $request->boolean('remember'));
 
-        return $this->authenticateUser($request, $user);
+        $response = $this->authenticateUser($request, $user);
+
+
+       if ($user->isProducer() || $user->isDistributor()) {
+        $businessProfile = $user->businessProfile;
+
+        // No business profile: redirect to profile creation.
+        if (! $businessProfile) {
+            return redirect()
+                ->route('business-profile.create')
+                ->with('info', 'Veuillez créer votre profil professionnel pour continuer.');
+        }
+
+        // Profile exists but is not approved: redirect to profile page.
+        if ($businessProfile->status !== 'APPROVED') {
+            return redirect()
+                ->route('business-profile.show')
+                ->with('info', 'Votre profil professionnel est en attente de validation ou nécessite votre attention.');
+        }
+    }
+        return $response;
     }
 
     public function authenticateUser(Request $request, User $user): RedirectResponse

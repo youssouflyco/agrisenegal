@@ -458,6 +458,62 @@
                         @endif
                     </div>
                 </section>
+                {{-- Seller Order Actions --}}
+@if (
+    in_array(auth()->user()->role->value, ['producer', 'distributor']) &&
+    $order->payment_status === 'PAID' &&
+    in_array($order->status, ['CONFIRMED', 'PROCESSING', 'SHIPPED'])
+)
+    @php
+        $nextStatus = match ($order->status) {
+            'CONFIRMED' => 'PROCESSING',
+            'PROCESSING' => 'SHIPPED',
+            'SHIPPED' => 'DELIVERED',
+        };
+
+        $buttonLabels = [
+            'PROCESSING' => 'Commencer la préparation',
+            'SHIPPED' => 'Marquer comme expédiée',
+            'DELIVERED' => 'Confirmer la livraison',
+        ];
+    @endphp
+
+    <section class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
+        <h2 class="text-lg font-bold text-gray-900">
+            Gestion de la commande
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Le paiement est confirmé. Vous pouvez maintenant faire avancer
+            le traitement de cette commande.
+        </p>
+
+        <form
+            action="{{ route('sales.orders.update-status', $order->id) }}"
+            method="POST"
+            class="mt-5"
+        >
+            @csrf
+            @method('PATCH')
+
+            <input type="hidden" name="status" value="{{ $nextStatus }}">
+
+            <button
+                type="submit"
+                onclick="return confirm('Confirmer cette mise à jour du statut ?')"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-agri-primary px-5 py-3 font-bold text-white transition hover:bg-agri-primary/90 focus:outline-none focus:ring-4 focus:ring-agri-light/40"
+            >
+                {{ $buttonLabels[$nextStatus] }}
+
+                <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </button>
+        </form>
+    </section>
+@endif
             </aside>
         </div>
     </div>

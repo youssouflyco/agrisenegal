@@ -137,6 +137,7 @@ Route::middleware(['auth', 'role:producer,distributor,admin,super_admin'])->pref
     Route::get('/', [OrderController::class, 'getCustomerOrders'])->name('orders.index');
     Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/{order}/status', [OrderController::class, 'updatePaymentStatus'])->name('orders.update');
+    Route::patch('/{order}/sales-status',[OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 Route::middleware(['auth', 'role:client,producer,distributor'])->prefix('mes-reclamations')->name('claims.')->group(function () {

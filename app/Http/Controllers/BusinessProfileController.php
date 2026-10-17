@@ -240,11 +240,11 @@ DB::transaction(function () use ($request, $validated, $user) {
 
     public function update(Request $request): RedirectResponse
     {
-    $profile = $request->user()->businessProfile;
+      $profile = $request->user()->businessProfile;
 
-    abort_unless($profile->status === 'REJECTED', 403);
+      abort_unless($profile->status === 'REJECTED', 403);
 
-    $validated = $request->validate([
+      $validated = $request->validate([
         'cni' => ['nullable', 'string', 'max:50'],
         'cni_front_photo' => ['nullable', 'image', 'max:5120'],
         'cni_back_photo' => ['nullable', 'image', 'max:5120'],
@@ -254,14 +254,14 @@ DB::transaction(function () use ($request, $validated, $user) {
         'business_name' => ['nullable', 'string', 'max:255'],
         'business_type' => ['nullable', 'string', 'max:255'],
         'business_photo' => ['nullable', 'image', 'max:5120'],
-    ]);
+      ]);
 
-    $files = [
+      $files = [
         'cni_front_photo',
         'cni_back_photo',
         'farm_photo',
         'business_photo',
-    ];
+      ];
 
             foreach ($files as $file) {
                 if ($request->hasFile($file)) {
@@ -275,7 +275,7 @@ DB::transaction(function () use ($request, $validated, $user) {
                         $request->file($file)
                     );
 
-                }
+            }
         }
 
     $profile->update([
